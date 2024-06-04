@@ -254,6 +254,29 @@ Resources:
           RDS_PASSWORD: "admin123"
           RDS_DB: "integradorashopeasy"
 
+  DeleteProductByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: delete_product_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        DeleteProductById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /delete_product_by_id/{id}
+            Method: delete
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
 Outputs:
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
@@ -313,3 +336,9 @@ Outputs:
   UpdateProductPutFunction:
     Description: "Update Product Put Lambda Function ARN"
     Value: !GetAtt UpdateProductPutFunction.Arn
+  DeleteProductByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete Product By Id function"
+    Value: !Sub "https://$ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_product_by_id/{id}"
+  DeleteProductByIdFunction:
+    Description: "Delete Product By Id Lambda Function ARN"
+    Value: !GetAtt DeleteUserByIdFunction.Arn
