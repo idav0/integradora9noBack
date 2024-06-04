@@ -18,3 +18,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy_lambda:
+    name: Deploy Lambda to AWS
+    runs-on: ubuntu-latest
+    needs: sonarcloud
+    steps:
+      - uses: actions/checkout@v3  # Añadí el paso de checkout aquí. Esto asegura que el codigo de nuestro repo se clone temporalmente en el servidor virtual de github actions, sin esto jamás habra ningún archivo en /home/runner/work/nombreProyecto/nombreProyecto/ que es donde busca el template el comando de sam build
+      - name: Set up Python 3.9 # Instalo la version que estuve ocupando en para mi proyecto en el mismo servidor virtual de github actions en las sig 3 lineas
+        uses: actions/setup-python@v2 # Esto con el fin de tener python por si no lo tiene ya que es usado por sam-cli
+        with:
+          python-version: 3.9
+      - name: Verify Python version  # Verifico que la version de python sea la correcta en el servidor
+        run: python --version
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2 # Configuro las credenciales de AWS (esto no cambia en el script del profesor)
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Install AWS SAM CLI # Instalo el CLI de SAM y ASEGURO que sea la ultima version porque si no es la ultima genera problemas (ya me pasó)
+        run: |
+          pip install aws-sam-cli
+      - name: Package AWS SAM Application
+        run: sam build --template template.yaml
+      - name: Deploy AWS SAM Application #Es importante definir aparte de los datos que nos dio el profesor, un S3 bucket (yo ademas de eso le puse un prefijo para mayor organización con un subdirectorio)
+        run: sam deploy --template-file .aws-sam/build/template.yaml --stack-name integradora9noBack --capabilities CAPABILITY_IAM --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-el1yrzwaiw06 --s3-prefix integradora9noBack
