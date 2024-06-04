@@ -1,0 +1,315 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  integradora9noBack
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+  Api:
+    Auth:
+      DefaultAuthorizer: NONE
+
+Resources:
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+
+  UsersApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: UsersApi
+      StageName: Prod
+
+  ProductsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ProductsApi
+      StageName: Prod
+
+  GetUsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_users/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /get_users
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetUserByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_user_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetUsersById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /get_user_by_id/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  InsertUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: insert_user/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /insert_user
+            Method: post
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  UpdateUserPutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: update_user_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUsersPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /update_user_put
+            Method: put
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  DeleteUserByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: delete_user_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        DeleteUserById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /delete_user_by_id/{id}
+            Method: delete
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_products/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /get_products
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetProductByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_product_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetProductById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /get_product_by_id/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  InsertProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: insert_product/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertProduct:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /insert_product
+            Method: post
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  UpdateProductPutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: update_product_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdateProductPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /update_product_put
+            Method: put
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+Outputs:
+  LambdaExecutionRoleArn:
+    Description: "Lambda Execution Role ARN"
+    Value: !GetAtt LambdaExecutionRole.Arn
+  GetUsersApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Users function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_users/"
+  GetUsersFunction:
+    Description: "Get Users Lambda Function ARN"
+    Value: !GetAtt GetUsersFunction.Arn
+  GetUserByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Users By Id function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_user_by_id/{id}"
+  GetUserByIdFunction:
+    Description: "Get Users By Id Lambda Function ARN"
+    Value: !GetAtt GetUserByIdFunction.Arn
+  InsertUserApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert User function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_user/"
+  InsertUserFunction:
+    Description: "Insert User Lambda Function ARN"
+    Value: !GetAtt InsertUserFunction.Arn
+  UpdateUserPutApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update User Put function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_put/"
+  UpdateUserPutFunction:
+    Description: "Update User Put Lambda Function ARN"
+    Value: !GetAtt UpdateUserPutFunction.Arn
+  DeleteUserByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
+    Value: !Sub "https://$UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
+  DeleteUserByIdFunction:
+    Description: "Delete User By Id Lambda Function ARN"
+    Value: !GetAtt DeleteUserByIdFunction.Arn
+
+  GetProductsApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Products function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_products/"
+  GetProductsFunction:
+    Description: "Get Products Lambda Function ARN"
+    Value: !GetAtt GetProductsFunction.Arn
+  GetProductByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Product By Id function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_product_by_id/{id}"
+  GetProductByIdFunction:
+    Description: "Get Product By Id Lambda Function ARN"
+    Value: !GetAtt GetProductByIdFunction.Arn
+  InsertProductApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Product function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_product/"
+  InsertProductFunction:
+    Description: "Insert Product Lambda Function ARN"
+    Value: !GetAtt InsertProductFunction.Arn
+  UpdateProductPutApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update Product Put function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_product_put/"
+  UpdateProductPutFunction:
+    Description: "Update Product Put Lambda Function ARN"
+    Value: !GetAtt UpdateProductPutFunction.Arn
