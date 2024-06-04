@@ -50,7 +50,7 @@ Resources:
   GetUsersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get_users/
+      CodeUri: users/get_users/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -73,7 +73,7 @@ Resources:
   GetUserByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get_user_by_id/
+      CodeUri: users/get_user_by_id/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -96,7 +96,7 @@ Resources:
   InsertUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: insert_user/
+      CodeUri: users/insert_user/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -119,7 +119,7 @@ Resources:
   UpdateUserPutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: update_user_put/
+      CodeUri: users/update_user_put/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -142,7 +142,7 @@ Resources:
   DeleteUserByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: delete_user_by_id/
+      CodeUri: users/delete_user_by_id/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -165,7 +165,7 @@ Resources:
   GetProductsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get_products/
+      CodeUri: products/get_products/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -188,7 +188,7 @@ Resources:
   GetProductByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: get_product_by_id/
+      CodeUri: products/get_product_by_id/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -211,7 +211,7 @@ Resources:
   InsertProductFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: insert_product/
+      CodeUri: products/insert_product/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -234,7 +234,7 @@ Resources:
   UpdateProductPutFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: update_product_put/
+      CodeUri: products/update_product_put/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -257,7 +257,7 @@ Resources:
   DeleteProductByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: delete_product_by_id/
+      CodeUri: products/delete_product_by_id/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
