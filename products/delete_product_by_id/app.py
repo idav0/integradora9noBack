@@ -19,7 +19,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "error": "id is required"
+                "error": "The id is required"
             }),
         }
 
@@ -31,8 +31,6 @@ def lambda_handler(event, context):
             "message": "Product deleted successfully"
         }),
     }
-
-
 
 
 def delete_user_by_id(id):
