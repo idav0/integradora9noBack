@@ -47,6 +47,13 @@ Resources:
       Name: ProductsApi
       StageName: Prod
 
+  PaymentMethodsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PaymentMethodsApi
+      StageName: Prod
+
+
   GetUsersFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -277,10 +284,150 @@ Resources:
           RDS_PASSWORD: "admin123"
           RDS_DB: "integradorashopeasy"
 
+  GetPaymentMethodsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/get_paymentMethods/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPaymentMethods:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /get_paymentMethods
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetPaymentMethodByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/get_paymentMethod_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPaymentMethodById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /get_paymentMethod_by_id/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetPaymentMethodsByUseridFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/get_paymentMethods_by_Userid/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPaymentMethodsByUserid:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /get_paymentMethods_by_Userid/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  InsertPaymentMethodFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/insert_paymentMethod/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertPaymentMethod:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /insert_paymentMethod
+            Method: post
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  UpdatePaymentMethodPutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/update_paymentMethod_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdatePaymentMethodPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /update_paymentMethod_put
+            Method: put
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  DeletePaymentMethodByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/delete_paymentMethod_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        DeletePaymentMethodById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /delete_paymentMethod_by_id/{id}
+            Method: delete
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+
 Outputs:
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn
+
   GetUsersApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Users function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_users/"
@@ -342,3 +489,40 @@ Outputs:
   DeleteProductByIdFunction:
     Description: "Delete Product By Id Lambda Function ARN"
     Value: !GetAtt DeleteUserByIdFunction.Arn
+
+  GetPaymentMethodsApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods/"
+  GetPaymentMethodsFunction:
+    Description: "Get Payment Methods Lambda Function ARN"
+    Value: !GetAtt GetPaymentMethodsFunction.Arn
+  GetPaymentMethodByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Payment Method By Id function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethod_by_id/{id}"
+  GetPaymentMethodByIdFunction:
+    Description: "Get Payment Method By Id Lambda Function ARN"
+    Value: !GetAtt GetPaymentMethodByIdFunction.Arn
+  GetPaymentMethodsByUseridApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods By Userid function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods_by_Userid/{id}"
+  GetPaymentMethodsByUseridFunction:
+    Description: "Get Payment Method By Userid Lambda Function ARN"
+    Value: !GetAtt GetPaymentMethodsByUseridFunction.Arn
+  InsertPaymentMethodApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Payment Method function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_paymentMethod/"
+  InsertPaymentMethodFunction:
+    Description: "Insert Payment Method Lambda Function ARN"
+    Value: !GetAtt InsertPaymentMethodFunction.Arn
+  UpdatePaymentMethodPutApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update Payment Method Put function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_paymentMethod_put/"
+  UpdatePaymentMethodPutFunction:
+    Description: "Update Payment Method Put Lambda Function ARN"
+    Value: !GetAtt UpdatePaymentMethodPutFunction.Arn
+  DeletePaymentMethodByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete Payment Method By Id function"
+    Value: !Sub "https://$UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_paymentMethod_by_id/{id}"
+  DeletePaymentMethodByIdFunction:
+    Description: "Delete Payment Method By Id Lambda Function ARN"
+    Value: !GetAtt DeletePaymentMethodByIdFunction.Arn
