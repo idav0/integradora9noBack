@@ -53,6 +53,12 @@ Resources:
       Name: PaymentMethodsApi
       StageName: Prod
 
+  AddressesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: AddressesApi
+      StageName: Prod
+
 
   GetUsersFunction:
     Type: AWS::Serverless::Function
@@ -422,6 +428,144 @@ Resources:
           RDS_PASSWORD: "admin123"
           RDS_DB: "integradorashopeasy"
 
+  GetAddressesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/get_addresses/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetAddresses:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /get_addresses
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetAddressByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/get_address_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetAddressById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /get_address_by_id/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetAddressesByUsersidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/get_addresses_by_Usersid/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetAddressesByUsersid:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /get_addresses_by_Usersid/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  InsertAddressFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/insert_address/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertAddress:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /insert_address
+            Method: post
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  UpdateAddressPutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/update_address_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdateAddressPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /update_address_put
+            Method: put
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  DeleteAddressByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/delete_address_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        DeleteAddressById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /delete_address_by_id/{id}
+            Method: delete
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
 
 Outputs:
   LambdaExecutionRoleArn:
@@ -454,7 +598,7 @@ Outputs:
     Value: !GetAtt UpdateUserPutFunction.Arn
   DeleteUserByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
-    Value: !Sub "https://$UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
   DeleteUserByIdFunction:
     Description: "Delete User By Id Lambda Function ARN"
     Value: !GetAtt DeleteUserByIdFunction.Arn
@@ -485,44 +629,82 @@ Outputs:
     Value: !GetAtt UpdateProductPutFunction.Arn
   DeleteProductByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Product By Id function"
-    Value: !Sub "https://$ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_product_by_id/{id}"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_product_by_id/{id}"
   DeleteProductByIdFunction:
     Description: "Delete Product By Id Lambda Function ARN"
     Value: !GetAtt DeleteUserByIdFunction.Arn
 
   GetPaymentMethodsApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods/"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods/"
   GetPaymentMethodsFunction:
     Description: "Get Payment Methods Lambda Function ARN"
     Value: !GetAtt GetPaymentMethodsFunction.Arn
   GetPaymentMethodByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Payment Method By Id function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethod_by_id/{id}"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethod_by_id/{id}"
   GetPaymentMethodByIdFunction:
     Description: "Get Payment Method By Id Lambda Function ARN"
     Value: !GetAtt GetPaymentMethodByIdFunction.Arn
   GetPaymentMethodsByUsersidApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods By Usersid function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods_by_Usersid/{id}"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods_by_Usersid/{id}"
   GetPaymentMethodsByUsersidFunction:
     Description: "Get Payment Method By Usersid Lambda Function ARN"
     Value: !GetAtt GetPaymentMethodsByUsersidFunction.Arn
   InsertPaymentMethodApi:
     Description: "API Gateway endpoint URL for Prod stage for Insert Payment Method function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_paymentMethod/"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_paymentMethod/"
   InsertPaymentMethodFunction:
     Description: "Insert Payment Method Lambda Function ARN"
     Value: !GetAtt InsertPaymentMethodFunction.Arn
   UpdatePaymentMethodPutApi:
     Description: "API Gateway endpoint URL for Prod stage for Update Payment Method Put function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_paymentMethod_put/"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_paymentMethod_put/"
   UpdatePaymentMethodPutFunction:
     Description: "Update Payment Method Put Lambda Function ARN"
     Value: !GetAtt UpdatePaymentMethodPutFunction.Arn
   DeletePaymentMethodByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Payment Method By Id function"
-    Value: !Sub "https://$UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_paymentMethod_by_id/{id}"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_paymentMethod_by_id/{id}"
   DeletePaymentMethodByIdFunction:
     Description: "Delete Payment Method By Id Lambda Function ARN"
     Value: !GetAtt DeletePaymentMethodByIdFunction.Arn
+
+
+  GetAddressesApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Addresses function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_addresses/"
+  GetAddressesFunction:
+    Description: "Get Addresses Lambda Function ARN"
+    Value: !GetAtt GetAddressesFunction.Arn
+  GetAddressByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Address By Id function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_address_by_id/{id}"
+  GetAddressByIdFunction:
+    Description: "Get Address By Id Lambda Function ARN"
+    Value: !GetAtt GetAddressByIdFunction.Arn
+  GetAddressesByUsersidApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Addresses By Usersid function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_addresses_by_Usersid/{id}"
+  GetAddressesByUsersidFunction:
+    Description: "Get Addresses By Usersid Lambda Function ARN"
+    Value: !GetAtt GetAddressesByUsersidFunction.Arn
+  InsertAddressApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Address function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_address/"
+  InsertAddressFunction:
+    Description: "Insert Address Lambda Function ARN"
+    Value: !GetAtt InsertAddressFunction.Arn
+  UpdateAddressPutFunction:
+    Description: "API Gateway endpoint URL for Prod stage for Update Address Put function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_address_put/"
+  UpdateAddressPutApi:
+    Description: "Update Address Put Lambda Function ARN"
+    Value: !GetAtt UpdateAddressPutFunction.Arn
+  DeleteAddressByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete Address By Id function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_address_by_id/{id}"
+  DeleteAddressByIdFunction:
+    Description: "Delete Address By Id Lambda Function ARN"
+    Value: !GetAtt DeleteAddressByIdFunction.Arn
