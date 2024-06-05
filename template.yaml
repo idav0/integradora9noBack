@@ -330,21 +330,21 @@ Resources:
           RDS_PASSWORD: "admin123"
           RDS_DB: "integradorashopeasy"
 
-  GetPaymentMethodsByUseridFunction:
+  GetPaymentMethodsByUsersidFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: paymentMethods/get_paymentMethods_by_Userid/
+      CodeUri: paymentMethods/get_paymentMethods_by_Usersid/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
       Events:
-        GetPaymentMethodsByUserid:
+        GetPaymentMethodsByUsersid:
           Type: Api
           Properties:
             RestApiId: !Ref PaymentMethodsApi
-            Path: /get_paymentMethods_by_Userid/{id}
+            Path: /get_paymentMethods_by_Usersid/{id}
             Method: get
       Environment:
         Variables:
@@ -502,12 +502,12 @@ Outputs:
   GetPaymentMethodByIdFunction:
     Description: "Get Payment Method By Id Lambda Function ARN"
     Value: !GetAtt GetPaymentMethodByIdFunction.Arn
-  GetPaymentMethodsByUseridApi:
-    Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods By Userid function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods_by_Userid/{id}"
-  GetPaymentMethodsByUseridFunction:
-    Description: "Get Payment Method By Userid Lambda Function ARN"
-    Value: !GetAtt GetPaymentMethodsByUseridFunction.Arn
+  GetPaymentMethodsByUsersidApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods By Usersid function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_paymentMethods_by_Usersid/{id}"
+  GetPaymentMethodsByUsersidFunction:
+    Description: "Get Payment Method By Usersid Lambda Function ARN"
+    Value: !GetAtt GetPaymentMethodsByUsersidFunction.Arn
   InsertPaymentMethodApi:
     Description: "API Gateway endpoint URL for Prod stage for Insert Payment Method function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_paymentMethod/"
