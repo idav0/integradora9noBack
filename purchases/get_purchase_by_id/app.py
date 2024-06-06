@@ -14,33 +14,25 @@ MYSQL_DB = os.getenv('RDS_DB')
 
 def lambda_handler(event, context):
     id = event['pathParameters'].get('id')
-
-    if id is None:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({
-                "error": "The id is required"
-            }),
-        }
-
-    delete_purchase_by_id(id)
-
+    purchase = get_purchase_by_id(id)
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "message": "Purchase deleted successfully"
+            "purchase": purchase
         }),
     }
 
 
-def delete_purchase_by_id(id):
+def get_purchase_by_id(id):
     connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
+    purchases = []
 
     try:
         with connection.cursor() as cursor:
-            delete_query = "DELETE FROM Purchases WHERE id = %s"
-            cursor.execute(delete_query, id)
-            connection.commit()
+            get_query = "SELECT * FROM Purchases WHERE id = %s"
+            cursor.execute(get_query, id)
+            purchases = cursor.fetchall()
     finally:
         connection.close()
 
+    return purchases
