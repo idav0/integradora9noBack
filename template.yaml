@@ -59,6 +59,12 @@ Resources:
       Name: AddressesApi
       StageName: Prod
 
+  PurchasesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: PurchasesApi
+      StageName: Prod
+
 
   GetUsersFunction:
     Type: AWS::Serverless::Function
@@ -566,6 +572,145 @@ Resources:
           RDS_PASSWORD: "admin123"
           RDS_DB: "integradorashopeasy"
 
+  GetPurchasesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/get_purchases/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPurchases:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /get_purchases
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetPurchaseByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/get_purchase_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPurchaseById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /get_purchase_by_id/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  GetPurchasesByUsersidFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/get_purchases_by_Usersid/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        GetPurchasesByUsersid:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /get_purchases_by_Usersid/{id}
+            Method: get
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  InsertPurchaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/insert_purchase/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertPurchase:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /insert_purchase
+            Method: post
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  UpdatePurchasePutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/update_purchase_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        UpdatePurchasePut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /update_purchase_put
+            Method: put
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+  DeletePurchaseByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: purchases/delete_purchase_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        DeletePurchaseById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PurchasesApi
+            Path: /delete_purchase_by_id/{id}
+            Method: delete
+      Environment:
+        Variables:
+          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
+          RDS_USER: "admin"
+          RDS_PASSWORD: "admin123"
+          RDS_DB: "integradorashopeasy"
+
+
 
 Outputs:
   LambdaExecutionRoleArn:
@@ -696,10 +841,10 @@ Outputs:
   InsertAddressFunction:
     Description: "Insert Address Lambda Function ARN"
     Value: !GetAtt InsertAddressFunction.Arn
-  UpdateAddressPutFunction:
+  UpdateAddressPutApi:
     Description: "API Gateway endpoint URL for Prod stage for Update Address Put function"
     Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_address_put/"
-  UpdateAddressPutApi:
+  UpdateAddressPutFunction:
     Description: "Update Address Put Lambda Function ARN"
     Value: !GetAtt UpdateAddressPutFunction.Arn
   DeleteAddressByIdApi:
@@ -708,3 +853,41 @@ Outputs:
   DeleteAddressByIdFunction:
     Description: "Delete Address By Id Lambda Function ARN"
     Value: !GetAtt DeleteAddressByIdFunction.Arn
+
+
+  GetPurchasesApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Purchases function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_purchases/"
+  GetPurchasesFunction:
+    Description: "Get Purchases Lambda Function ARN"
+    Value: !GetAtt GetPurchasesFunction.Arn
+  GetPurchaseByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Purchase By Id function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_purchase_by_id/{id}"
+  GetPurchaseByIdFunction:
+    Description: "Get Purchase By Id Lambda Function ARN"
+    Value: !GetAtt GetPurchaseByIdFunction.Arn
+  GetPurchasesByUsersidApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Purchases By Usersid function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_purchases_by_Usersid/{id}"
+  GetPurchasesByUsersidFunction:
+    Description: "Get Purchases By Usersid Lambda Function ARN"
+    Value: !GetAtt GetPurchasesByUsersidFunction.Arn
+  InsertPurchaseApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Purchase function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_purchase/"
+  InsertPurchaseFunction:
+    Description: "Insert Purchase Lambda Function ARN"
+    Value: !GetAtt InsertPurchaseFunction.Arn
+  UpdatePurchasePutApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update Purchase Put function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_purchase_put/"
+  UpdatePurchasePutFunction:
+    Description: "Update Purchase Put Lambda Function ARN"
+    Value: !GetAtt UpdatePurchasePutFunction.Arn
+  DeletePurchaseByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete Purchase By Id function"
+    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_purchase_by_id/{id}"
+  DeletePurchaseByIdFunction:
+    Description: "Delete Purchase By Id Lambda Function ARN"
+    Value: !GetAtt DeletePurchaseByIdFunction.Arn
