@@ -13,25 +13,26 @@ MYSQL_DB = os.getenv('RDS_DB')
 
 
 def lambda_handler(event, context):
-    purchases = get_purchases()
+    id = event['pathParameters'].get('id')
+    address = get_address_by_id(id)
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "purchases": purchases
+            "address": address
         }),
     }
 
 
-def get_purchases():
+def get_address_by_id(id):
     connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
-    purchases = []
+    addresses = []
 
     try:
         with connection.cursor() as cursor:
-            get_query = "SELECT * FROM Purchases"
-            cursor.execute(get_query)
-            purchases = cursor.fetchall()
+            get_query = "SELECT * FROM Addresses WHERE id = %s"
+            cursor.execute(get_query, id)
+            addresses = cursor.fetchall()
     finally:
         connection.close()
 
-    return purchases
+    return addresses
