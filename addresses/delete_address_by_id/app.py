@@ -24,7 +24,7 @@ def lambda_handler(event, ):
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": "Internal Server Error - Address not deleted "
+                "message": "Internal Error - Address not deleted "
             }),
         }
 
