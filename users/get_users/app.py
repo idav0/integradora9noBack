@@ -13,6 +13,15 @@ MYSQL_DB = os.getenv('RDS_DB')
 
 
 def lambda_handler(event, context):
+    user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+    if user.get('cognito:groups') is None or 'admin' not in user.get('cognito:groups'):
+        return {
+            "statusCode": 403,
+            "body": json.dumps({
+                "message": "Forbidden"
+            }),
+        }
+
     users = get_users()
     return {
         "statusCode": 200,
