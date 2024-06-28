@@ -12,8 +12,8 @@ class DatabaseConfig:
     def __init__(self):
 
         try:
-            self.__secret_name = os.getenv("RDS_SECRET_NAME")
-            self.__region_name = os.getenv("RDS_REGION")
+            self.__secret_name = os.getenv("SECRET_NAME")
+            self.__region_name = os.getenv("REGION")
             self.__secret = self.__get_secret(self.__secret_name, self.__region_name)
         except ClientError as e:
             print(e)
