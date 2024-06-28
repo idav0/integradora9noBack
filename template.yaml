@@ -105,12 +105,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: CognitoAuthorizer
-      Environment:
-        Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
 
   GetUserByIdFunction:
     Type: AWS::Serverless::Function
@@ -121,6 +115,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetUsersById:
           Type: Api
@@ -128,12 +124,8 @@ Resources:
             RestApiId: !Ref UsersApi
             Path: /get_user_by_id/{id}
             Method: get
-      Environment:
-        Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   InsertUserFunction:
     Type: AWS::Serverless::Function

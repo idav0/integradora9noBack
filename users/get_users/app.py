@@ -1,12 +1,6 @@
 import json
 from datetime import date, datetime
-import os
-# import requests
 from shared.database_manager import DatabaseConfig
-
-
-
-
 
 
 def lambda_handler(event, context):
