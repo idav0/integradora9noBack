@@ -1,6 +1,6 @@
 import json
 import logging
-from shared.database_manager import DatabaseConfig
+from shared import DatabaseConfig
 
 
 def lambda_handler(event, ):
