@@ -22,15 +22,8 @@ def lambda_handler(event, context):
             }),
         }
 
-    delete_user_by_id(id)
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "User deleted successfully"
-        }),
-    }
-
+    response = delete_user_by_id(id)
+    return response
 
 
 
@@ -43,6 +36,18 @@ def delete_user_by_id(id):
             delete_query = "DELETE FROM Users WHERE id = %s"
             cursor.execute(delete_query, id)
             connection.commit()
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "User deleted successfully"
+                }),
+            }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - User not deleted"
+            })}
     finally:
         connection.close()
 

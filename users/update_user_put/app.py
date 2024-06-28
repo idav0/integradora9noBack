@@ -30,14 +30,9 @@ def lambda_handler(event, context):
             }),
         }
 
-    update_user_put(email, password, name, lastname, birthdate, gender, type, id)
+    response = update_user_put(email, password, name, lastname, birthdate, gender, type, id)
+    return response
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "User updated successfully"
-        }),
-    }
 
 
 def update_user_put(email, password, name, lastname, birthdate, gender, type, id):
@@ -49,6 +44,19 @@ def update_user_put(email, password, name, lastname, birthdate, gender, type, id
             insert_query = "UPDATE Users SET email=%s, password=%s, name=%s, lastname=%s, birthdate=%s, gender = %s, type = %s WHERE id = %s"
             cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type, id))
             connection.commit()
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "User updated successfully"
+                }),
+            }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - User not updated"
+            }),
+        }
     finally:
         connection.close()
 
