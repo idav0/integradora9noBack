@@ -1,18 +1,17 @@
 import json
-import pymysql
-from datetime import date, datetime
-import os
-# import requests
-
-
-MYSQL_HOST = os.getenv('RDS_HOST')
-MYSQL_USER = os.getenv('RDS_USER')
-MYSQL_PASSWORD = os.getenv('RDS_PASSWORD')
-MYSQL_DB = os.getenv('RDS_DB')
-
+from shared.database_manager import DatabaseConfig
 
 
 def lambda_handler(event, context):
+    user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+    if user.get('cognito:groups') is None or ('admin' not in user.get('cognito:groups') and 'user' not in user.get('cognito:groups')):
+        return {
+            "statusCode": 403,
+            "body": json.dumps({
+                "message": "Forbidden"
+            }),
+        }
+
     products = get_products()
     return {
         "statusCode": 200,
@@ -23,7 +22,8 @@ def lambda_handler(event, context):
 
 
 def get_products():
-    connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
+    db = DatabaseConfig()
+    connection = db.get_new_connection()
     products = []
 
     try:

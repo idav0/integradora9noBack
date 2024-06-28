@@ -66,6 +66,11 @@ Resources:
     Properties:
       Name: ProductsApi
       StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
 
   PaymentMethodsApi:
     Type: AWS::Serverless::Api
@@ -222,6 +227,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetProducts:
           Type: Api
@@ -229,12 +236,12 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_products
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetProductByIdFunction:
     Type: AWS::Serverless::Function
@@ -245,6 +252,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetProductById:
           Type: Api
@@ -252,12 +261,12 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_product_by_id/{id}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   InsertProductFunction:
     Type: AWS::Serverless::Function
@@ -268,6 +277,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         InsertProduct:
           Type: Api
@@ -275,12 +286,12 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /insert_product
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   UpdateProductPutFunction:
     Type: AWS::Serverless::Function
@@ -291,6 +302,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         UpdateProductPut:
           Type: Api
@@ -298,12 +311,12 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /update_product_put
             Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   DeleteProductByIdFunction:
     Type: AWS::Serverless::Function
@@ -314,6 +327,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         DeleteProductById:
           Type: Api
@@ -321,12 +336,12 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /delete_product_by_id/{id}
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPaymentMethodsFunction:
     Type: AWS::Serverless::Function

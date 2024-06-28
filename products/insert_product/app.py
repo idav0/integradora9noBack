@@ -1,17 +1,18 @@
 import json
-import pymysql
-import os
-# import requests
-
-
-MYSQL_HOST = os.getenv('RDS_HOST')
-MYSQL_USER = os.getenv('RDS_USER')
-MYSQL_PASSWORD = os.getenv('RDS_PASSWORD')
-MYSQL_DB = os.getenv('RDS_DB')
-
+from shared.database_manager import DatabaseConfig
 
 
 def lambda_handler(event, context):
+
+    user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+    if user.get('cognito:groups') is None or 'admin' not in user.get('cognito:groups'):
+        return {
+            "statusCode": 403,
+            "body": json.dumps({
+                "message": "Forbidden"
+            }),
+        }
+
     jsonBody = json.loads(event['body'])
     name = jsonBody['name']
     description = jsonBody['description']
@@ -27,24 +28,33 @@ def lambda_handler(event, context):
             }),
         }
 
-    insert_product(name,  description, price, stock, image)
+    response = insert_product(name,  description, price, stock, image)
+    return response
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "Product inserted successfully"
-        }),
-    }
+
 
 
 def insert_product(name,  description, price, stock, image):
-    connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
-
+    db = DatabaseConfig()
+    connection = db.get_new_connection()
     try:
         with connection.cursor() as cursor:
             insert_query = "INSERT INTO Products ( name, description, price, stock, image) VALUES ( %s, %s, %s, %s, %s)"
             cursor.execute(insert_query, (name,  description, price, stock, image))
             connection.commit()
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "Product inserted successfully"
+                }),
+            }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - Product not inserted"
+            }),
+        }
     finally:
         connection.close()
 
