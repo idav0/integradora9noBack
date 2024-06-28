@@ -1,15 +1,11 @@
 import json
 import boto3
-from dotenv import load_dotenv
 import os
 from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, __):
-    load_dotenv()
-    client = boto3.client('cognito-idp', region_name='us-east-1',
-                          aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-                          aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'))
+    client = boto3.client('cognito-idp', region_name='us-east-1')
     user_pool_id = "us-east-1_1oU0zkg6n"
     client_id = "26cb8bd1qmjkvfqdhus3ea5sn9"
     try:

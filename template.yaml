@@ -57,6 +57,8 @@ Resources:
                   - cognito-idp:AdminListGroupsForUser
                   - cognito-idp:AdminCreateUser
                   - cognito-idp:AdminAddUserToGroup
+                  - cognito-idp:AdminSetUserPassword
+                  - cognito-idp:AdminGetUser
                 Resource: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
         - PolicyName: CognitoAccess2
           PolicyDocument:
@@ -148,6 +150,23 @@ Resources:
           Properties:
             RestApiId: !Ref LoginApi
             Path: /register_user
+            Method: post
+
+  SetPasswordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: set_password/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        SetPasswordFunction:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LoginApi
+            Path: /set_password
             Method: post
 
 
@@ -838,6 +857,12 @@ Outputs:
   RegisterUserFunction:
     Description: "Register User Lambda Function ARN"
     Value: !GetAtt RegisterUserFunction.Arn
+  SetPasswordApi:
+    Description: "API Gateway endpoint URL for Prod stage for Set Password function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/set_password/"
+  SetPasswordFunction:
+    Description: "Set Password Function Lambda Function ARN"
+    Value: !GetAtt SetPasswordFunction.Arn
 
   GetUsersApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Users function"
