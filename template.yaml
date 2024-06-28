@@ -35,7 +35,7 @@ Resources:
                   - logs:PutLogEvents
                   - lambda:GetLayerVersion
                 Resource:
-                  - !GetAtt SharedLayer.Arn
+                  - !Ref SharedLayer
                   - arn:aws:logs:*:*:*
 
   UsersApi:
