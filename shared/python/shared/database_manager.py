@@ -44,7 +44,7 @@ class DatabaseConfig:
     def get_new_connection(self):
         return self.__create_connection()
 
-    def __get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
+    def __get_secret(self, secret_name: str, region_name: str) -> Dict[str, str]:
 
         session = boto3.session.Session()
         client = session.client(service_name='secretsmanager', region_name=region_name)
