@@ -12,6 +12,10 @@ class DatabaseConfig:
         self.__mysql_password = os.getenv("RDS_PASSWORD")
 
     def __create_connection(self):
+        print(self.__mysql_host)
+        print(self.__mysql_db)
+        print(self.__mysql_user)
+        print(self.__mysql_password)
         try:
             connection = pymysql.connect(
                 host=self.__mysql_host,
