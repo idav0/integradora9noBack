@@ -7,9 +7,9 @@ from shared.database_manager import DatabaseConfig
 
 
 def lambda_handler(event,context ):
-    body_id = event['pathParameters'].get('id')
+    id = event['pathParameters'].get('id')
 
-    if body_id is None:
+    if id is None:
         return {
             "statusCode": 400,
             "body": json.dumps({
@@ -17,41 +17,23 @@ def lambda_handler(event,context ):
             }),
         }
 
-    try:
-        delete_address_by_id(body_id)
-    except Exception as e:
-        logging.error(f"Error deleting address with id {body_id}: {e} ")
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "Internal Error - Address not deleted "
-            }),
-        }
+    delete_address_by_id(id)
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": "Product deleted successfully"
+        }),
+    }
 
 
-def delete_address_by_id(body_id):
+def delete_address_by_id(id):
     db = DatabaseConfig()
-
     connection = db.get_new_connection()
-
-    if not connection:
-        raise ValueError("Failed to connect to database")
-
     try:
         with connection.cursor() as cursor:
             delete_query = "DELETE FROM Addresses WHERE id = %s"
-            cursor.execute(delete_query, (body_id,))
+            cursor.execute(delete_query, id)
             connection.commit()
-
-        return {
-            "statusCode": 200,
-            "body": json.dumps({
-                "message": "Address deleted successfully"
-            }),
-        }
-    except pymysql.Error as e:
-        logging.error(f"Error executing delete query: {e}")
-        raise
     finally:
-        if connection:
-            connection.close()
+        connection.close()
