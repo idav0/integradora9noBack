@@ -2,7 +2,7 @@ import json
 from datetime import date, datetime
 import os
 # import requests
-from shared.python.shared.database_manager import DatabaseConfig
+from shared.database_manager import DatabaseConfig
 
 
 
