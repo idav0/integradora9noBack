@@ -9,7 +9,7 @@ class DatabaseConfig:
         load_dotenv()
 
         self.__mysql_host = os.getenv("RDS_HOST")
-        self.__mysql_name = os.getenv("RDS_NAME")
+        self.__mysql_db = os.getenv("RDS_DB")
         self.__mysql_user = os.getenv("RDS_USER")
         self.__mysql_password = os.getenv("RDS_PASSWORD")
 
@@ -17,7 +17,7 @@ class DatabaseConfig:
         try:
             connection = pymysql.connect(
                 host=self.__mysql_host,
-                database=self.__mysql_name,
+                database=self.__mysql_db,
                 user=self.__mysql_user,
                 password=self.__mysql_password
             )
