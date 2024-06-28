@@ -1,8 +1,4 @@
 import json
-import logging
-
-import pymysql
-
 from shared.database_manager import DatabaseConfig
 
 
