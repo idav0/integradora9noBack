@@ -30,7 +30,8 @@ def lambda_handler(event, context):
             }),
         }
 
-    insert_user(email, password, name, lastname, birthdate, gender, type)
+    response = insert_user(email, password, name, lastname, birthdate, gender, type)
+    return response
 
 
 
