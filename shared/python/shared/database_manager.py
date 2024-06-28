@@ -17,7 +17,8 @@ class DatabaseConfig:
                 host=self.__mysql_host,
                 database=self.__mysql_db,
                 user=self.__mysql_user,
-                password=self.__mysql_password
+                password=self.__mysql_password,
+                cursorclass=pymysql.cursors.DictCursor
             )
             return connection
         except pymysql.MySQLError as error:
