@@ -59,6 +59,7 @@ Resources:
                   - cognito-idp:AdminAddUserToGroup
                   - cognito-idp:AdminSetUserPassword
                   - cognito-idp:AdminGetUser
+                  - cognito-idp:AdminInitiateAuth
                 Resource: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
         - PolicyName: CognitoAccess2
           PolicyDocument:
