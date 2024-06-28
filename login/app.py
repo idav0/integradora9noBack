@@ -1,12 +1,10 @@
 import json
 import boto3
-from dotenv import load_dotenv
 import os
 from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, __):
-    load_dotenv()
     client = boto3.client('cognito-idp', region_name='us-east-1')
     client_id = "26cb8bd1qmjkvfqdhus3ea5sn9"
 
