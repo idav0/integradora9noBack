@@ -156,6 +156,8 @@ Resources:
             RestApiId: !Ref UsersApi
             Path: /insert_user
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -179,6 +181,8 @@ Resources:
             RestApiId: !Ref UsersApi
             Path: /update_user_put
             Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -202,6 +206,8 @@ Resources:
             RestApiId: !Ref UsersApi
             Path: /delete_user_by_id/{id}
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
           REGION_NAME: "us-east-1"

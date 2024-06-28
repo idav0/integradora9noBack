@@ -1,5 +1,4 @@
 import json
-import pymysql
 from shared.database_manager import DatabaseConfig
 
 
