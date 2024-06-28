@@ -56,6 +56,7 @@ Resources:
                 Action:
                   - cognito-idp:AdminListGroupsForUser
                   - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminAddUserToGroup
                 Resource: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
         - PolicyName: CognitoAccess2
           PolicyDocument:
