@@ -147,6 +147,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         InsertUsers:
           Type: Api
@@ -156,10 +158,8 @@ Resources:
             Method: post
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   UpdateUserPutFunction:
     Type: AWS::Serverless::Function
@@ -170,6 +170,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         UpdateUsersPut:
           Type: Api
@@ -179,10 +181,8 @@ Resources:
             Method: put
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   DeleteUserByIdFunction:
     Type: AWS::Serverless::Function
@@ -193,6 +193,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         DeleteUserById:
           Type: Api
@@ -202,10 +204,8 @@ Resources:
             Method: delete
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetProductsFunction:
     Type: AWS::Serverless::Function
