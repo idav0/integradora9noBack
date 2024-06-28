@@ -90,6 +90,30 @@ Resources:
       Name: PurchasesApi
       StageName: Prod
 
+  LoginApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: LoginApi
+      StageName: Prod
+
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: login/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        LoginFunction:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LoginApi
+            Path: /login
+            Method: post
+
 
 
 
@@ -765,6 +789,13 @@ Outputs:
   LambdaExecutionRoleArn:
     Description: "Lambda Execution Role ARN"
     Value: !GetAtt LambdaExecutionRole.Arn
+
+  LoginApi:
+    Description: "API Gateway endpoint URL for Prod stage for Login function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/login/"
+  LoginFunction:
+    Description: "Login Lambda Function ARN"
+    Value: !GetAtt LoginFunction.Arn
 
   GetUsersApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Users function"
