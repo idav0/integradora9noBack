@@ -43,6 +43,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                   - lambda:GetLayerVersion
+                  - secretsmanager:GetSecretValue
                 Resource:
                   - !Ref SharedLayer
                   - arn:aws:logs:*:*:*
