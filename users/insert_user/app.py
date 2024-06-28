@@ -31,12 +31,6 @@ def lambda_handler(event, context):
 
     insert_user(email, password, name, lastname, birthdate, gender, type)
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "User inserted successfully"
-        }),
-    }
 
 
 def insert_user(email, password, name, lastname, birthdate, gender, type):
@@ -47,6 +41,20 @@ def insert_user(email, password, name, lastname, birthdate, gender, type):
             insert_query = "INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type))
             connection.commit()
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "User inserted successfully"
+                }),
+            }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - User not inserted"
+            }),
+        }
+
     finally:
         connection.close()
 

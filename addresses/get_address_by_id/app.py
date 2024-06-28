@@ -1,20 +1,29 @@
 import json
-import pymysql
-from datetime import date, datetime
-import os
-# import requests
+import logging
+from shared.database_manager import DatabaseConfig
 
 
-MYSQL_HOST = os.getenv('RDS_HOST')
-MYSQL_USER = os.getenv('RDS_USER')
-MYSQL_PASSWORD = os.getenv('RDS_PASSWORD')
-MYSQL_DB = os.getenv('RDS_DB')
+def lambda_handler(event, ):
+    body_id = event['pathParameters'].get('id')
 
+    if body_id is None:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "error": "The id is required"
+            }),
+        }
 
+    address = get_address_by_id(body_id)
 
-def lambda_handler(event, context):
-    id = event['pathParameters'].get('id')
-    address = get_address_by_id(id)
+    if address is None:
+        return {
+            "statusCode": 404,
+            "body": json.dumps({
+                "message": "Address not found"
+            }),
+        }
+
     return {
         "statusCode": 200,
         "body": json.dumps({
@@ -23,16 +32,23 @@ def lambda_handler(event, context):
     }
 
 
-def get_address_by_id(id):
-    connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
-    addresses = []
+def get_address_by_id(body_id):
+    db = DatabaseConfig()
+    connection = db.get_new_connection()
 
     try:
         with connection.cursor() as cursor:
             get_query = "SELECT * FROM Addresses WHERE id = %s"
-            cursor.execute(get_query, id)
+            cursor.execute(get_query, body_id)
             addresses = cursor.fetchall()
+    except Exception as e:
+        logging.error(e)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - Address not found"
+            }),
+        }
     finally:
         connection.close()
-
-    return addresses
+        return addresses

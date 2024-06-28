@@ -1,21 +1,15 @@
 import json
+import logging
+
 import pymysql
-from datetime import date, datetime
-import os
-# import requests
+
+from shared.database_manager import DatabaseConfig
 
 
-MYSQL_HOST = os.getenv('RDS_HOST')
-MYSQL_USER = os.getenv('RDS_USER')
-MYSQL_PASSWORD = os.getenv('RDS_PASSWORD')
-MYSQL_DB = os.getenv('RDS_DB')
+def lambda_handler(event, ):
+    body_id = event['pathParameters'].get('id')
 
-
-
-def lambda_handler(event, context):
-    id = event['pathParameters'].get('id')
-
-    if id is None:
+    if body_id is None:
         return {
             "statusCode": 400,
             "body": json.dumps({
@@ -23,24 +17,41 @@ def lambda_handler(event, context):
             }),
         }
 
-    delete_address_by_id(id)
+    try:
+        delete_address_by_id(body_id)
+    except Exception as e:
+        logging.error(f"Error deleting address with id {body_id}: {e}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - Address not deleted"
+            }),
+        }
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "Address deleted successfully"
-        }),
-    }
 
+def delete_address_by_id(body_id):
+    db = DatabaseConfig()
 
-def delete_address_by_id(id):
-    connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
+    connection = db.get_new_connection()
+
+    if not connection:
+        raise ValueError("Failed to connect to database")
 
     try:
         with connection.cursor() as cursor:
             delete_query = "DELETE FROM Addresses WHERE id = %s"
-            cursor.execute(delete_query, id)
+            cursor.execute(delete_query, (body_id,))
             connection.commit()
-    finally:
-        connection.close()
 
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": "Address deleted successfully"
+            }),
+        }
+    except pymysql.Error as e:
+        logging.error(f"Error executing delete query: {e}")
+        raise
+    finally:
+        if connection:
+            connection.close()

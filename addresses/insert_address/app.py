@@ -31,12 +31,7 @@ def lambda_handler(event, context):
 
     insert_address(name, country, state, city, street, postal_code, Users_id)
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "Address inserted successfully"
-        }),
-    }
+
 
 
 def insert_address(name, country, state, city, street, postal_code, Users_id):
@@ -47,6 +42,20 @@ def insert_address(name, country, state, city, street, postal_code, Users_id):
             insert_query = "INSERT INTO Addresses (name, country, state, city, postal_code, Users_id) VALUES ( %s, %s)"
             cursor.execute(insert_query, (name, country, state, city, street, postal_code, Users_id))
             connection.commit()
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "Address inserted successfully"
+                }),
+            }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "message": "Internal Error - Address not inserted"
+            }),
+        }
+
     finally:
         connection.close()
 
