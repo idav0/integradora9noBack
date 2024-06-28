@@ -6,7 +6,6 @@ import logging
 
 class DatabaseConfig:
     def __init__(self):
-        load_dotenv()
 
         self.__mysql_host = os.getenv("RDS_HOST")
         self.__mysql_db = os.getenv("RDS_DB")
