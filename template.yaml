@@ -33,7 +33,10 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:*:*:*
+                  - lambda:GetLayerVersion
+                Resource:
+                  - !GetAtt SharedLayer.Arn
+                  - arn:aws:logs:*:*:*
 
   UsersApi:
     Type: AWS::Serverless::Api
