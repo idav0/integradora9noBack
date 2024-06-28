@@ -6,7 +6,7 @@ import pymysql
 from shared.database_manager import DatabaseConfig
 
 
-def lambda_handler(event, ):
+def lambda_handler(event,context ):
     body_id = event['pathParameters'].get('id')
 
     if body_id is None:
