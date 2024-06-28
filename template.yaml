@@ -122,6 +122,23 @@ Resources:
             Path: /login
             Method: post
 
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: register_user/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        RegisterUserFunction:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LoginApi
+            Path: /register_user
+            Method: post
+
 
 
 
@@ -804,6 +821,12 @@ Outputs:
   LoginFunction:
     Description: "Login Lambda Function ARN"
     Value: !GetAtt LoginFunction.Arn
+  RegisterUserApi:
+    Description: "API Gateway endpoint URL for Prod stage for Register User function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/register_user/"
+  RegisterUserFunction:
+    Description: "Register User Lambda Function ARN"
+    Value: !GetAtt RegisterUserFunction.Arn
 
   GetUsersApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Users function"
