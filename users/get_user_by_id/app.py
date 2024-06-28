@@ -1,7 +1,16 @@
 import json
 import pymysql
 from datetime import date, datetime
-from shared.database_manager import DatabaseConfig
+import os
+# import requests
+
+
+MYSQL_HOST = os.getenv('RDS_HOST')
+MYSQL_USER = os.getenv('RDS_USER')
+MYSQL_PASSWORD = os.getenv('RDS_PASSWORD')
+MYSQL_DB = os.getenv('RDS_DB')
+
+
 
 def lambda_handler(event, context):
     id = event['pathParameters'].get('id')
@@ -15,9 +24,7 @@ def lambda_handler(event, context):
 
 
 def get_user_by_id(id):
-    db = DatabaseConfig()
-    connection = db.get_new_connection()
-
+    connection = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB, cursorclass=pymysql.cursors.DictCursor)
     users = []
 
     try:
