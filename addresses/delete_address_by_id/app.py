@@ -20,11 +20,11 @@ def lambda_handler(event, ):
     try:
         delete_address_by_id(body_id)
     except Exception as e:
-        logging.error(f"Error deleting address with id {body_id}: {e}")
+        logging.error(f"Error deleting address with id {body_id}: {e} ")
         return {
             "statusCode": 500,
             "body": json.dumps({
-                "message": "Internal Error - Address not deleted"
+                "message": "Internal Server Error - Address not deleted "
             }),
         }
 

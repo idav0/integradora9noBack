@@ -13,6 +13,15 @@ Globals:
 
 Resources:
 
+  SharedLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: SharedLayer
+      Description: Common dependencies
+      ContentUri: shared/
+      CompatibleRuntimes:
+        - python3.9
+
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -73,14 +82,7 @@ Resources:
       Name: PurchasesApi
       StageName: Prod
 
-  SharedLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: SharedLayer
-      Description: Common dependencies
-      ContentUri: shared/
-      CompatibleRuntimes:
-        - python3.9
+
 
 
   GetUsersFunction:
