@@ -1,3 +1,10 @@
 pymysql
 requests
-
+json
+logging
+os
+random
+string
+boto3
+typing
+botocore
