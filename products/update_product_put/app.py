@@ -42,8 +42,10 @@ def lambda_handler(event, context):
         if id_product is None or name is None or description is None or price is None or stock is None or image is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        response = update_product_put(id_product, name,  description, price, stock, image)
-        return response
+        if not id_product.isdigit():
+            raise ValueError("Bad request - Invalid request format")
+
+        return update_product_put(id_product, name,  description, price, stock, image)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -82,18 +84,31 @@ def update_product_put(id_product, name, description, price, stock, image):
 
     try:
         with connection.cursor() as cursor:
-            insert_query = ("UPDATE Products SET name = %s, description = %s, price = %s, stock = %s, image = %s  "
-                            "WHERE id = %s")
-            cursor.execute(insert_query, (name, description, price, stock, image, id_product))
-            connection.commit()
-            return {
-                "statusCode": 200,
-                "body": json.dumps({
-                    "message": "Product updated successfully"
-                }),
-            }
+            search_query = "SELECT * FROM Products WHERE id = %s"
+            cursor.execute(search_query, id_product)
+            result = cursor.fetchall()
+
+            if len(result) > 0:
+                insert_query = ("UPDATE Products SET name = %s, description = %s, price = %s, stock = %s, image = %s  "
+                                "WHERE id = %s")
+                cursor.execute(insert_query, (name, description, price, stock, image, id_product))
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({
+                        "message": "Product updated successfully"
+                    }),
+                }
+            else:
+                return {
+                    "statusCode": 404,
+                    "body": json.dumps({
+                        "message": "Product not found"
+                    }),
+                }
     except Exception as e:
         logging.error('Error : %s', e)
+        connection.rollback()
         raise e
     finally:
         connection.close()

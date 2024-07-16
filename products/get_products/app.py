@@ -31,8 +31,7 @@ def lambda_handler(event, context):
                 }),
             }
 
-        products = get_products()
-        return products
+        return get_products()
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -91,6 +90,7 @@ def get_products():
                 }
     except Exception as e:
         logging.error('Error : %s', e)
+        connection.rollback()
         raise e
 
     finally:

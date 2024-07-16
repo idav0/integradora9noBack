@@ -41,8 +41,7 @@ def lambda_handler(event, context):
         if name is None or description is None or price is None or stock is None or image is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        response = insert_product(name,  description, price, stock, image)
-        return response
+        return insert_product(name,  description, price, stock, image)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -91,6 +90,7 @@ def insert_product(name,  description, price, stock, image):
             }
     except Exception as e:
         logging.error('Error : %s', e)
+        connection.rollback()
         raise e
     finally:
         connection.close()

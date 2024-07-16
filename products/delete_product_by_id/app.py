@@ -1,7 +1,6 @@
 import json
 import logging
 import pymysql
-
 from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
@@ -37,8 +36,10 @@ def lambda_handler(event, context):
         if id_product is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        response = delete_user_by_id(id_product)
-        return response
+        if not id_product.isdigit():
+            raise ValueError("Bad request - Invalid request format")
+
+        return delete_user_by_id(id_product)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -77,17 +78,30 @@ def delete_user_by_id(id_product):
 
     try:
         with connection.cursor() as cursor:
-            delete_query = "DELETE FROM Products WHERE id = %s"
-            cursor.execute(delete_query, id_product)
-            connection.commit()
-            return {
-                "statusCode": 200,
-                "body": json.dumps({
-                    "message": "Product deleted successfully"
-                }),
-            }
+            search_query = "SELECT * FROM Products WHERE id = %s"
+            cursor.execute(search_query, id_product)
+            result = cursor.fetchall()
+
+            if len(result) > 0:
+                delete_query = "DELETE FROM Products WHERE id = %s"
+                cursor.execute(delete_query, id_product)
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({
+                        "message": "Product deleted successfully"
+                    }),
+                }
+            else:
+                return {
+                    "statusCode": 404,
+                    "body": json.dumps({
+                        "message": "Product not found"
+                    }),
+                }
     except Exception as e:
         logging.error('Error : %s', e)
+        connection.rollback()
         raise e
     finally:
         connection.close()

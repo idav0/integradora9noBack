@@ -36,9 +36,10 @@ def lambda_handler(event, context):
         if id_product is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        product = get_product_by_id(id_product)
+        if not id_product.isdigit():
+            raise ValueError("Bad request - Invalid request format")
 
-        return product
+        return get_product_by_id(id_product)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -98,6 +99,7 @@ def get_product_by_id(id_product):
 
     except Exception as e:
         logging.error('Error : %s', e)
+        connection.rollback()
         raise e
 
     finally:
