@@ -1,37 +1,73 @@
 import json
+import logging
+import pymysql
+from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
 
 def lambda_handler(event, context):
+    error_message = 'Error : %s'
+    error_500 = {
+        "statusCode": 500,
+        "body": json.dumps({
+            "error": "Internal Error - Product Not Inserted"
+        })
+    }
+    cognito_groups = ['admin']
+    try:
 
-    user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
-    if user.get('cognito:groups') is None or 'admin' not in user.get('cognito:groups'):
-        return {
-            "statusCode": 403,
-            "body": json.dumps({
-                "message": "Forbidden"
-            }),
-        }
+        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+        if user.get('cognito:groups') is None or not any(
+                group in cognito_groups for group in user.get('cognito:groups')):
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "Forbidden"
+                }),
+            }
 
-    jsonBody = json.loads(event['body'])
-    name = jsonBody['name']
-    description = jsonBody['description']
-    price = jsonBody['price']
-    stock = jsonBody['stock']
-    image = jsonBody['image']
+        json_body = json.loads(event['body'])
+        name = json_body['name']
+        description = json_body['description']
+        price = json_body['price']
+        stock = json_body['stock']
+        image = json_body['image']
 
-    if id is None or name is None or description is None or price is None or stock is None or image is None:
+        if name is None or description is None or price is None or stock is None or image is None:
+            raise ValueError("Bad request - Parameters are missing")
+
+        response = insert_product(name,  description, price, stock, image)
+        return response
+
+    except KeyError as e:
+        logging.error(error_message, e)
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "message": "Missing required fields"
-            }),
+                "error": "Bad request - Invalid request format"
+            })
         }
 
-    response = insert_product(name,  description, price, stock, image)
-    return response
+    except ValueError as e:
+        logging.error(error_message, e)
+        return {
+            "statusCode": 400,
+            "body": json.dumps({
+                "error": str(e)
+            })
+        }
 
+    except ClientError as e:
+        logging.error('Error AWS ClientError : %s', e)
+        return error_500
 
+    except pymysql.MySQLError as e:
+        logging.error('Error MySQL : %s', e)
+        return error_500
+
+    except Exception as e:
+        logging.error(error_message, e)
+        return error_500
 
 
 def insert_product(name,  description, price, stock, image):
@@ -49,13 +85,7 @@ def insert_product(name,  description, price, stock, image):
                 }),
             }
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": "Internal Error - Product not inserted"
-            }),
-        }
+        logging.error('Error : %s', e)
+        raise e
     finally:
         connection.close()
-
-

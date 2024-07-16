@@ -5,9 +5,9 @@ import json
 
 mock_body = {
     "body": json.dumps({
-        "username": "20193tn142@utez.edu.mx",
-        "temporary_password": "5Cw10r$n",
-        "new_password": "Pass12&."
+        "username": "20213tn079@utez.edu.mx",
+        "temporary_password": "o[p9cmS FQL2",
+        "new_password": "Pass34&."
     })
 }
 

@@ -24,10 +24,6 @@ class DatabaseConfig:
         self.__mysql_password = self.__secret["RDS_PASSWORD"]
 
     def __create_connection(self):
-        print(self.__mysql_host)
-        print(self.__mysql_db)
-        print(self.__mysql_user)
-        print(self.__mysql_password)
         try:
             connection = pymysql.connect(
                 host=self.__mysql_host,
@@ -38,8 +34,8 @@ class DatabaseConfig:
             )
             return connection
         except pymysql.MySQLError as error:
-            logging.error(error)
-            return None
+            logging.error('Error MYSQL ClientError : %s', error)
+            raise error
 
     def get_new_connection(self):
         return self.__create_connection()
