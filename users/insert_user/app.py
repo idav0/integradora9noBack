@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "error": "Bad request - Invalid request format "
+                "error": "Bad request - Invalid request format"
             })
         }
 
@@ -85,7 +85,6 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
                 try:
 
                     client = boto3.client('cognito-idp', region_name)
-                    print(client)
                     user_pool_id = __secrets['USER_POOL_ID']
                     role = 'user'
 

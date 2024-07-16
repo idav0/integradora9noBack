@@ -2,6 +2,3 @@ pymysql
 requests
 boto3
 botocore
-string
-random
-typing
