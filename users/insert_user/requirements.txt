@@ -1,9 +1,4 @@
 pymysql
 requests
-logging
-os
-random
-string
 boto3
-typing
 botocore
