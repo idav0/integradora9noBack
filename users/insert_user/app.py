@@ -78,13 +78,12 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
             result = cursor.fetchall()
 
             if len(result) == 0:
-                secret_name = os.getenv("SECRET_NAME")
-                region_name = os.getenv("REGION_NAME")
-                print(secret_name, region_name)
-                secrets = get_secret(secret_name, region_name)
-                print(secrets)
-
                 try:
+                    secret_name = os.getenv("SECRET_NAME")
+                    region_name = os.getenv("REGION_NAME")
+                    print(secret_name, region_name)
+                    secrets = get_secret(secret_name, region_name)
+                    print(secrets)
                     print(secrets)
                     client = boto3.client('cognito-idp', region_name=region_name)
                     print(client)
