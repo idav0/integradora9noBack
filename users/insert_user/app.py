@@ -80,15 +80,15 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
             if len(result) == 0:
                 secret_name = os.getenv("SECRET_NAME")
                 region_name = os.getenv("REGION_NAME")
-                print(secret_name,region_name)
-                __secrets = __get_secret(secret_name, region_name)
-                print(__secrets)
+                print(secret_name, region_name)
+                secrets = get_secret(secret_name, region_name)
+                print(secrets)
 
                 try:
-                    print(__secrets)
+                    print(secrets)
                     client = boto3.client('cognito-idp', region_name=region_name)
                     print(client)
-                    user_pool_id = __secrets['USER_POOL_ID']
+                    user_pool_id = secrets['USER_POOL_ID']
                     role = 'user'
 
                     client.admin_create_user(
@@ -140,7 +140,7 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
         connection.close()
 
 
-def __get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
+def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
     session = boto3.session.Session()
     client = session.client(service_name='secretsmanager', region_name=region_name)
 
