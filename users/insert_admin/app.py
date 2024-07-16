@@ -15,11 +15,26 @@ def lambda_handler(event, context):
     error_500 = {
         "statusCode": 500,
         "body": json.dumps({
-            "error": "Internal Error - User Not Inserted"
+            "error": "Internal Error - Admin Not Inserted"
         })
     }
+    required_cognito_groups = ['admin']
+    cognito_groups = 'cognito:groups'
 
     try:
+
+        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+        user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
+            else user.get(cognito_groups, [])
+
+        if user.get(cognito_groups) is None or not any(
+                group in required_cognito_groups for group in user_cognito_groups):
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "Forbidden"
+                }),
+            }
 
         json_body = json.loads(event['body'])
         email = json_body['email']
@@ -34,7 +49,7 @@ def lambda_handler(event, context):
                 or type_user is None):
             raise ValueError("Bad request - Parameters are missing")
 
-        return insert_user(email, password, name, lastname, birthdate, gender, type_user)
+        return insert_admin(email, password, name, lastname, birthdate, gender, type_user)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -67,7 +82,7 @@ def lambda_handler(event, context):
         return error_500
 
 
-def insert_user(email, password, name, lastname, birthdate, gender, type_user):
+def insert_admin(email, password, name, lastname, birthdate, gender, type_user):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
@@ -84,7 +99,7 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
 
                 client = boto3.client('cognito-idp', region_name=region_name)
                 user_pool_id = __secrets['USER_POOL_ID']
-                role = 'user'
+                role = 'admin'
 
                 client.admin_create_user(
                     UserPoolId=user_pool_id,
@@ -109,14 +124,14 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
-                        "message": "User inserted successfully, verification email sent"
+                        "message": "Admin inserted successfully, verification email sent"
                     }),
                 }
             else:
                 return {
                     "statusCode": 409,
                     "body": json.dumps({
-                        "error": "Conflict - User with given email already exists"
+                        "error": "Conflict - User or Admin with given email already exists"
                     }),
                 }
     except Exception as e:

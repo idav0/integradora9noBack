@@ -235,11 +235,34 @@ Resources:
       Layers:
         - !Ref SharedLayer
       Events:
-        InsertUsers:
+        InsertUser:
           Type: Api
           Properties:
             RestApiId: !Ref UsersApi
             Path: /insert_user
+            Method: post
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  InsertAdminFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/insert_admin/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        InsertAdmin:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /insert_admin
             Method: post
             Auth:
               Authorizer: CognitoAuthorizer
@@ -883,6 +906,12 @@ Outputs:
   InsertUserFunction:
     Description: "Insert User Lambda Function ARN"
     Value: !GetAtt InsertUserFunction.Arn
+  InsertAdminApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Admin function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_admin/"
+  InsertAdminFunction:
+    Description: "Insert Admin Lambda Function ARN"
+    Value: !GetAtt InsertAdminFunction.Arn
   UpdateUserPutApi:
     Description: "API Gateway endpoint URL for Prod stage for Update User Put function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_put/"
