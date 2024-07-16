@@ -1,6 +1,5 @@
 pymysql
 requests
-json
 logging
 os
 random
