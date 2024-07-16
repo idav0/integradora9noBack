@@ -59,7 +59,7 @@ def lambda_handler(event, context):
         return error_500
 
     except pymysql.MySQLError as e:
-        logging.error('Error MySQL : %s ', e)
+        logging.error('Error MySQL : %s', e)
         return error_500
 
     except Exception as e:
