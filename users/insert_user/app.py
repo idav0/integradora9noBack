@@ -80,7 +80,9 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
             if len(result) == 0:
                 secret_name = os.getenv("SECRET_NAME")
                 region_name = os.getenv("REGION_NAME")
+                print(secret_name,region_name)
                 __secrets = __get_secret(secret_name, region_name)
+                print(__secrets)
 
                 try:
                     print(__secrets)
