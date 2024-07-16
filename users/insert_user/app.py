@@ -83,16 +83,29 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
 
     try:
         with connection.cursor() as cursor:
-            insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
-                            "VALUES (%s, %s, %s, %s, %s, %s, %s)")
-            cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
-            connection.commit()
-            return {
-                "statusCode": 200,
-                "body": json.dumps({
-                    "message": "User inserted successfully"
-                }),
-            }
+            search_query = "SELECT * FROM Users WHERE email = %s"
+            cursor.execute(search_query, email)
+            result = cursor.fetchall()
+
+            if len(result) == 0:
+
+                insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
+                                "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+                cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({
+                        "message": "User inserted successfully"
+                    }),
+                }
+            else:
+                return {
+                    "statusCode": 409,
+                    "body": json.dumps({
+                        "error": "Conflict - User with given email already exists"
+                    }),
+                }
     except Exception as e:
         logging.error('Error : %s', e)
         connection.rollback()
