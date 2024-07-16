@@ -117,7 +117,7 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
                         }),
                     }
                 except ClientError as e:
-                    logging.error('Error AWS ClientError : %s', e)
+                    logging.error('Error AWS ClientError : %s ', e)
                     raise e
                 except Exception as e:
                     logging.error('Error : %s', e)

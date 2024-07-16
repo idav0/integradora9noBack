@@ -234,6 +234,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
+      Timeout: 15
       Events:
         InsertUser:
           Type: Api
