@@ -83,8 +83,9 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
                 __secrets = __get_secret(secret_name, region_name)
 
                 try:
-
-                    client = boto3.client('cognito-idp', region_name)
+                    print(__secrets)
+                    client = boto3.client('cognito-idp', region_name=region_name)
+                    print(client)
                     user_pool_id = __secrets['USER_POOL_ID']
                     role = 'user'
 
