@@ -13,13 +13,17 @@ def lambda_handler(event, context):
             "error": "Internal Error - Product Not Found"
         })
     }
-    cognito_groups = ['admin', 'user']
+    required_cognito_groups = ['admin', 'user']
+    cognito_groups = 'cognito:groups'
 
     try:
 
         user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
-        if user.get('cognito:groups') is None or not any(
-                group in cognito_groups for group in user.get('cognito:groups')):
+        user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
+            else user.get(cognito_groups, [])
+
+        if user.get(cognito_groups) is None or not any(
+                group in required_cognito_groups for group in user_cognito_groups):
             return {
                 "statusCode": 403,
                 "body": json.dumps({
