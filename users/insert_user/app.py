@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         return {
             "statusCode": 400,
             "body": json.dumps({
-                "error": "Bad request - Invalid request format"
+                "error": "Bad request - Invalid request format "
             })
         }
 
