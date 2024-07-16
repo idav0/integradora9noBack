@@ -82,36 +82,45 @@ def insert_user(email, password, name, lastname, birthdate, gender, type_user):
                 region_name = os.getenv("REGION_NAME")
                 __secrets = __get_secret(secret_name, region_name)
 
-                client = boto3.client('cognito-idp', region_name=region_name)
-                user_pool_id = __secrets['USER_POOL_ID']
-                role = 'user'
+                try:
 
-                client.admin_create_user(
-                    UserPoolId=user_pool_id,
-                    Username=email,
-                    UserAttributes=[
-                        {'Name': 'email', 'Value': email},
-                        {'Name': 'email_verified', 'Value': 'false'},
-                    ],
-                    TemporaryPassword=password
-                )
+                    client = boto3.client('cognito-idp', region_name)
+                    user_pool_id = __secrets['USER_POOL_ID']
+                    role = 'user'
 
-                client.admin_add_user_to_group(
-                    UserPoolId=user_pool_id,
-                    Username=email,
-                    GroupName=role
-                )
+                    client.admin_create_user(
+                        UserPoolId=user_pool_id,
+                        Username=email,
+                        UserAttributes=[
+                            {'Name': 'email', 'Value': email},
+                            {'Name': 'email_verified', 'Value': 'false'},
+                        ],
+                        TemporaryPassword=password
+                    )
 
-                insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
-                                "VALUES (%s, %s, %s, %s, %s, %s, %s)")
-                cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
-                connection.commit()
-                return {
-                    "statusCode": 200,
-                    "body": json.dumps({
-                        "message": "User inserted successfully, verification email sent"
-                    }),
-                }
+                    client.admin_add_user_to_group(
+                        UserPoolId=user_pool_id,
+                        Username=email,
+                        GroupName=role
+                    )
+
+                    insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
+                                    "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+                    cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
+                    connection.commit()
+                    return {
+                        "statusCode": 200,
+                        "body": json.dumps({
+                            "message": "User inserted successfully, verification email sent"
+                        }),
+                    }
+                except ClientError as e:
+                    logging.error('Error AWS ClientError : %s', e)
+                    raise e
+                except Exception as e:
+                    logging.error('Error : %s', e)
+                    raise e
+
             else:
                 return {
                     "statusCode": 409,
