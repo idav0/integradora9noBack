@@ -238,7 +238,7 @@ Resources:
         InsertUser:
           Type: Api
           Properties:
-            RestApiId: !Ref UsersApi
+            RestApiId: !Ref LoginApi
             Path: /insert_user
             Method: post
       Environment:
@@ -902,7 +902,7 @@ Outputs:
     Value: !GetAtt GetUserByIdFunction.Arn
   InsertUserApi:
     Description: "API Gateway endpoint URL for Prod stage for Insert User function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_user/"
+    Value: !Sub "https://${LoginApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_user/"
   InsertUserFunction:
     Description: "Insert User Lambda Function ARN"
     Value: !GetAtt InsertUserFunction.Arn
