@@ -105,6 +105,13 @@ def update_user_data_patch(username, temp_password, new_password):
                                     'email_verified': 'true'
                                 }
                             )
+                            client.admin_update_user_attributes(
+                                UserPoolId=user_pool_id,
+                                Username=username,
+                                UserAttributes=[
+                                    {'Name': 'email_verified', 'Value': 'true'}
+                                ]
+                            )
 
                             insert_query = "UPDATE Users SET password=%s WHERE username = %s"
                             cursor.execute(insert_query, (new_password, username))
