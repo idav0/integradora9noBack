@@ -91,7 +91,6 @@ def insert_user(username, email, password, name, lastname, birthdate, gender, ty
                         secrets = get_secret(secret_name, region_name)
                         client = boto3.client('cognito-idp', region_name=region_name)
                         user_pool_id = secrets['USER_POOL_ID']
-                        role = 'user'
 
                         client.admin_create_user(
                             UserPoolId=user_pool_id,
@@ -106,12 +105,12 @@ def insert_user(username, email, password, name, lastname, birthdate, gender, ty
                         client.admin_add_user_to_group(
                             UserPoolId=user_pool_id,
                             Username=username,
-                            GroupName=role
+                            GroupName=type_user
                         )
 
-                        insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
-                                        "VALUES (%s, %s, %s, %s, %s, %s, %s)")
-                        cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
+                        insert_query = ("INSERT INTO Users (username, email, password, name, lastname, birthdate, gender, type) "
+                                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+                        cursor.execute(insert_query, (username, email, password, name, lastname, birthdate, gender, type_user))
                         connection.commit()
                         return {
                             "statusCode": 200,
