@@ -2,3 +2,4 @@ pymysql
 requests
 boto3
 botocore
+bcrypt

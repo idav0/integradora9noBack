@@ -292,6 +292,32 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  UpdateUserPasswordPatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/update_user_password_patch/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Timeout: 15
+      Events:
+        UpdateUserPasswordPatch:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /update_user_temp_password_patch
+            Method: patch
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
   DeleteUserByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -908,6 +934,12 @@ Outputs:
   UpdateUserTempPasswordPatch:
     Description: "Update User Temp Password Putch Lambda Function ARN"
     Value: !GetAtt UpdateUserTempPasswordPatchFunction.Arn
+  UpdateUserPasswordPatchApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update User Password Patch function"
+    Value: !Sub "https://${LoginApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_password_patch/"
+  UpdateUserPasswordPatch:
+    Description: "Update User Password Putch Lambda Function ARN"
+    Value: !GetAtt UpdateUserPasswordPatchFunction.Arn
   DeleteUserByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"

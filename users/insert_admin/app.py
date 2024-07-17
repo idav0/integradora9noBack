@@ -7,6 +7,7 @@ import pymysql
 import boto3
 from typing import Dict
 from botocore.exceptions import ClientError
+import bcrypt
 from shared.database_manager import DatabaseConfig
 
 
@@ -123,9 +124,12 @@ def insert_admin(username, email, password, name, lastname, birthdate, gender, t
                             GroupName=type_user
                         )
 
+                        salt = bcrypt.gensalt()
+                        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+
                         insert_query = ("INSERT INTO Users (username, email, password, name, lastname, birthdate, gender, type) "
                                         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
-                        cursor.execute(insert_query, (username, email, password, name, lastname, birthdate, gender, type_user))
+                        cursor.execute(insert_query, (username, email, hashed_password, name, lastname, birthdate, gender, type_user))
                         connection.commit()
                         return {
                             "statusCode": 200,

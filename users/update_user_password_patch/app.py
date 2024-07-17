@@ -17,17 +17,33 @@ def lambda_handler(event, context):
             "error": "Internal Error - User Not Updated"
         })
     }
+    required_cognito_groups = ['admin', 'user']
+    cognito_groups = 'cognito:groups'
 
     try:
+
+        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+        user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
+            else user.get(cognito_groups, [])
+
+        if user.get(cognito_groups) is None or not any(
+                group in required_cognito_groups for group in user_cognito_groups):
+            return {
+                "statusCode": 403,
+                "body": json.dumps({
+                    "message": "Forbidden"
+                }),
+            }
+
         json_body = json.loads(event['body'])
         username = json_body['username']
-        temp_password = json_body['temp_password']
+        old_password = json_body['old_password']
         new_password = json_body['new_password']
 
-        if username is None or temp_password is None or new_password is None:
+        if username is None or old_password is None or new_password is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        return update_user_temp_password_patch(username, temp_password, new_password)
+        return update_user_password_patch(username, old_password, new_password)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -60,7 +76,7 @@ def lambda_handler(event, context):
         return error_500
 
 
-def update_user_temp_password_patch(username, temp_password, new_password):
+def update_user_password_patch(username, old_password, new_password):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
@@ -73,7 +89,7 @@ def update_user_temp_password_patch(username, temp_password, new_password):
             if len(result_username) > 0:
 
                 user = result_username[0]
-                confirm_old_password = bcrypt.checkpw(temp_password.encode('utf-8'), user['password'])
+                confirm_old_password = bcrypt.checkpw(old_password.encode('utf-8'), user['password'])
 
                 if confirm_old_password:
 
@@ -91,28 +107,16 @@ def update_user_temp_password_patch(username, temp_password, new_password):
                             AuthFlow='ADMIN_USER_PASSWORD_AUTH',
                             AuthParameters={
                                 'USERNAME': username,
-                                'PASSWORD': temp_password
+                                'PASSWORD': old_password
                             }
                         )
 
-                        if response['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
-                            client.respond_to_auth_challenge(
-                                ClientId=client_id,
-                                ChallengeName='NEW_PASSWORD_REQUIRED',
-                                Session=response['Session'],
-                                ChallengeResponses={
-                                    'USERNAME': username,
-                                    'NEW_PASSWORD': new_password,
-                                    'email_verified': 'true'
-                                }
-                            )
-
-                            client.admin_update_user_attributes(
+                        if 'AuthenticationResult' in response:
+                            client.admin_set_user_password(
                                 UserPoolId=user_pool_id,
                                 Username=username,
-                                UserAttributes=[
-                                    {'Name': 'email_verified', 'Value': 'true'}
-                                ]
+                                Password=new_password,
+                                Permanent=True
                             )
 
                             salt = bcrypt.gensalt()
