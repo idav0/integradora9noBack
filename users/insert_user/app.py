@@ -83,7 +83,7 @@ def insert_user(username, email, password, name, lastname, birthdate, gender, ty
                 cursor.execute(search_query_username, username)
                 result_username = cursor.fetchall()
 
-                if len(result_username == 0):
+                if len(result_username) == 0:
 
                     try:
                         secret_name = os.getenv("SECRET_NAME")
