@@ -32,20 +32,16 @@ def lambda_handler(event, context):
             }
 
         json_body = json.loads(event['body'])
-        email = json_body['email']
-        password = json_body['password']
+        id_user = json_body['id']
         name = json_body['name']
         lastname = json_body['lastname']
         birthdate = json_body['birthdate']
         gender = json_body['gender']
-        type_user = json_body['type']
-        id_user = json_body['id']
 
-        if (email is None or password is None or name is None or lastname is None or birthdate is None or gender is None
-                or type_user is None or id_user is None):
+        if id_user is None or name is None or lastname is None or birthdate is None or gender is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        return update_user_put(email, password, name, lastname, birthdate, gender, type_user, id_user)
+        return update_user_data_patch(id_user, name, lastname, birthdate, gender)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -78,7 +74,7 @@ def lambda_handler(event, context):
         return error_500
 
 
-def update_user_put(email, password, name, lastname, birthdate, gender, type_user, id_user):
+def update_user_data_patch(id_user, name, lastname, birthdate, gender):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
@@ -89,9 +85,9 @@ def update_user_put(email, password, name, lastname, birthdate, gender, type_use
             result = cursor.fetchall()
 
             if len(result) > 0:
-                insert_query = ("UPDATE Users SET email=%s, password=%s, name=%s, lastname=%s, birthdate=%s, "
-                                "gender = %s, type = %s WHERE id = %s")
-                cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user, id_user))
+                insert_query = ("UPDATE Users SET name=%s, lastname=%s, birthdate=%s, gender = %s "
+                                "WHERE id = %s")
+                cursor.execute(insert_query, (name, lastname, birthdate, gender, id_user))
                 connection.commit()
                 return {
                     "statusCode": 200,

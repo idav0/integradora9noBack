@@ -260,10 +260,10 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
-  UpdateUserPutFunction:
+  UpdateUserDataPatchFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: users/update_user_put/
+      CodeUri: users/update_user_data_patch/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -272,14 +272,38 @@ Resources:
       Layers:
         - !Ref SharedLayer
       Events:
-        UpdateUsersPut:
+        UpdateUserDataPatch:
           Type: Api
           Properties:
             RestApiId: !Ref UsersApi
-            Path: /update_user_put
-            Method: put
+            Path: /update_user_data_patch
+            Method: patch
             Auth:
               Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  UpdateUserTempPasswordPatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/update_user_temp_password_patch/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Timeout: 15
+      Events:
+        UpdateUserTempPasswordPatch:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LoginApi
+            Path: /update_user_temp_password_patch
+            Method: patch
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -895,12 +919,18 @@ Outputs:
   InsertAdminFunction:
     Description: "Insert Admin Lambda Function ARN"
     Value: !GetAtt InsertAdminFunction.Arn
-  UpdateUserPutApi:
-    Description: "API Gateway endpoint URL for Prod stage for Update User Put function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_put/"
-  UpdateUserPutFunction:
-    Description: "Update User Put Lambda Function ARN"
-    Value: !GetAtt UpdateUserPutFunction.Arn
+  UpdateUserDataPatchApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update User Data Patch function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_data_patch/"
+  UpdateUserDataPatchFunction:
+    Description: "Update User Data Putch Lambda Function ARN"
+    Value: !GetAtt UpdateUserDataPatchFunction.Arn
+  UpdateUserTempPasswordPatchApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update User Temp Password Patch function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_temp_password_patch/"
+  UpdateUserTempPasswordPatch:
+    Description: "Update User Temp Password Putch Lambda Function ARN"
+    Value: !GetAtt UpdateUserTempPasswordPatch.Arn
   DeleteUserByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
