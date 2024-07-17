@@ -258,6 +258,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
+      Timeout: 15
       Events:
         InsertAdmin:
           Type: Api

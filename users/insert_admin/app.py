@@ -37,19 +37,20 @@ def lambda_handler(event, context):
             }
 
         json_body = json.loads(event['body'])
+        username = json_body['username']
         email = json_body['email']
         password = generate_temporary_password()
         name = json_body['name']
         lastname = json_body['lastname']
         birthdate = json_body['birthdate']
         gender = json_body['gender']
-        type_user = json_body['type']
+        type_user = 'admin'
 
-        if (email is None or password is None or name is None or lastname is None or birthdate is None or gender is None
-                or type_user is None):
+        if (username is None or email is None or name is None or lastname is None
+                or birthdate is None or gender is None):
             raise ValueError("Bad request - Parameters are missing")
 
-        return insert_admin(email, password, name, lastname, birthdate, gender, type_user)
+        return insert_admin(username, email, password, name, lastname, birthdate, gender, type_user)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -82,56 +83,76 @@ def lambda_handler(event, context):
         return error_500
 
 
-def insert_admin(email, password, name, lastname, birthdate, gender, type_user):
+def insert_admin(username, email, password, name, lastname, birthdate, gender, type_user):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
     try:
         with connection.cursor() as cursor:
-            search_query = "SELECT * FROM Users WHERE email = %s"
-            cursor.execute(search_query, email)
-            result = cursor.fetchall()
+            search_query_email = "SELECT * FROM Users WHERE email = %s"
+            cursor.execute(search_query_email, email)
+            result_email = cursor.fetchall()
 
-            if len(result) == 0:
-                secret_name = os.getenv("SECRET_NAME")
-                region_name = os.getenv("REGION_NAME")
-                __secrets = __get_secret(secret_name, region_name)
+            if len(result_email) == 0:
+                search_query_username = "SELECT * FROM Users WHERE username = %s"
+                cursor.execute(search_query_username, username)
+                result_username = cursor.fetchall()
 
-                client = boto3.client('cognito-idp', region_name=region_name)
-                user_pool_id = __secrets['USER_POOL_ID']
-                role = 'admin'
+                if len(result_username) == 0:
 
-                client.admin_create_user(
-                    UserPoolId=user_pool_id,
-                    Username=email,
-                    UserAttributes=[
-                        {'Name': 'email', 'Value': email},
-                        {'Name': 'email_verified', 'Value': 'false'},
-                    ],
-                    TemporaryPassword=password
-                )
+                    try:
+                        secret_name = os.getenv("SECRET_NAME")
+                        region_name = os.getenv("REGION_NAME")
+                        secrets = get_secret(secret_name, region_name)
+                        client = boto3.client('cognito-idp', region_name=region_name)
+                        user_pool_id = secrets['USER_POOL_ID']
+                        role = 'user'
 
-                client.admin_add_user_to_group(
-                    UserPoolId=user_pool_id,
-                    Username=email,
-                    GroupName=role
-                )
+                        client.admin_create_user(
+                            UserPoolId=user_pool_id,
+                            Username=username,
+                            UserAttributes=[
+                                {'Name': 'email', 'Value': email},
+                                {'Name': 'email_verified', 'Value': 'false'},
+                            ],
+                            TemporaryPassword=password
+                        )
 
-                insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
-                                "VALUES (%s, %s, %s, %s, %s, %s, %s)")
-                cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
-                connection.commit()
-                return {
-                    "statusCode": 200,
-                    "body": json.dumps({
-                        "message": "Admin inserted successfully, verification email sent"
-                    }),
-                }
+                        client.admin_add_user_to_group(
+                            UserPoolId=user_pool_id,
+                            Username=username,
+                            GroupName=role
+                        )
+
+                        insert_query = ("INSERT INTO Users (email, password, name, lastname, birthdate, gender, type) "
+                                        "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+                        cursor.execute(insert_query, (email, password, name, lastname, birthdate, gender, type_user))
+                        connection.commit()
+                        return {
+                            "statusCode": 200,
+                            "body": json.dumps({
+                                "message": "User inserted successfully, verification email sent"
+                            }),
+                        }
+                    except ClientError as e:
+                        logging.error('Error AWS ClientError : %s ', e)
+                        raise e
+                    except Exception as e:
+                        logging.error('Error : %s', e)
+                        raise e
+                else:
+                    return {
+                        "statusCode": 409,
+                        "body": json.dumps({
+                            "error": "Conflict - User with given username already exists"
+                        }),
+                    }
+
             else:
                 return {
                     "statusCode": 409,
                     "body": json.dumps({
-                        "error": "Conflict - User or Admin with given email already exists"
+                        "error": "Conflict - User with given email already exists"
                     }),
                 }
     except Exception as e:
@@ -143,7 +164,7 @@ def insert_admin(email, password, name, lastname, birthdate, gender, type_user):
         connection.close()
 
 
-def __get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
+def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
     session = boto3.session.Session()
     client = session.client(service_name='secretsmanager', region_name=region_name)
 
