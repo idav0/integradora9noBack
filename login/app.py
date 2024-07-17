@@ -54,7 +54,7 @@ def lambda_handler(event, __):
     except ClientError as e:
         return {
             'statusCode': 400,
-            'body': json.dumps({"error_message": e.response['Error']['Message']})
+            'body': json.dumps({"error_message ": e.response['Error']['Message']})
         }
     except Exception as e:
         return {
