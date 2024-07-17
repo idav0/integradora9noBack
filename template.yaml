@@ -135,6 +135,10 @@ Resources:
             RestApiId: !Ref LoginApi
             Path: /login
             Method: post
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   RegisterUserFunction:
     Type: AWS::Serverless::Function

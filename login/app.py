@@ -1,14 +1,20 @@
 import json
 import boto3
 import os
+import logging
+from typing import Dict
 from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, __):
-    client = boto3.client('cognito-idp', region_name='us-east-1')
-    client_id = "26cb8bd1qmjkvfqdhus3ea5sn9"
-
     try:
+        secret_name = os.getenv("SECRET_NAME")
+        region_name = os.getenv("REGION_NAME")
+        secrets = get_secret(secret_name, region_name)
+
+        client = boto3.client('cognito-idp', region_name='us-east-1')
+        client_id = secrets['CLIENT_ID']
+
         body_parameters = json.loads(event["body"])
         username = body_parameters.get('username')
         password = body_parameters.get('password')
@@ -26,16 +32,14 @@ def lambda_handler(event, __):
         access_token = response['AuthenticationResult']['AccessToken']
         refresh_token = response['AuthenticationResult']['RefreshToken']
 
-        # Obtén los grupos del usuario
         user_groups = client.admin_list_groups_for_user(
             Username=username,
-            UserPoolId='us-east-1_1oU0zkg6n'  # Reemplaza con tu User Pool ID
+            UserPoolId='us-east-1_1oU0zkg6n'
         )
 
-        # Determina el rol basado en el grupo
         role = None
         if user_groups['Groups']:
-            role = user_groups['Groups'][0]['GroupName']  # Asumiendo un usuario pertenece a un solo grupo
+            role = user_groups['Groups'][0]['GroupName']
 
         return {
             'statusCode': 200,
@@ -57,3 +61,16 @@ def lambda_handler(event, __):
             'statusCode': 500,
             'body': json.dumps({"error_message": str(e)})
         }
+
+
+def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
+    session = boto3.session.Session()
+    client = session.client(service_name='secretsmanager', region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        logging.error("Failed to retrieve secret: %s", e)
+        raise e
+
+    return json.loads(get_secret_value_response['SecretString'])
