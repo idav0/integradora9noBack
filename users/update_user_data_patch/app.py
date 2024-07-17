@@ -13,7 +13,7 @@ def lambda_handler(event, context):
             "error": "Internal Error - User Not Updated"
         })
     }
-    required_cognito_groups = ['admin']
+    required_cognito_groups = ['admin', 'user']
     cognito_groups = 'cognito:groups'
 
     try:

@@ -927,10 +927,10 @@ Outputs:
     Value: !GetAtt UpdateUserDataPatchFunction.Arn
   UpdateUserTempPasswordPatchApi:
     Description: "API Gateway endpoint URL for Prod stage for Update User Temp Password Patch function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_temp_password_patch/"
+    Value: !Sub "https://${LoginApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_temp_password_patch/"
   UpdateUserTempPasswordPatch:
     Description: "Update User Temp Password Putch Lambda Function ARN"
-    Value: !GetAtt UpdateUserTempPasswordPatch.Arn
+    Value: !GetAtt UpdateUserTempPasswordPatchFunction.Arn
   DeleteUserByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
