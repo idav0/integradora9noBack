@@ -89,7 +89,7 @@ def update_user_password_patch(username, old_password, new_password):
             if len(result_username) > 0:
 
                 user = result_username[0]
-                confirm_old_password = bcrypt.checkpw(old_password.encode('utf-8'), user['password'])
+                confirm_old_password = bcrypt.checkpw(old_password.encode('utf-8'), user['password'].encode('utf-8'))
 
                 if confirm_old_password:
 
