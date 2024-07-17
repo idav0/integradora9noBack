@@ -142,25 +142,6 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
-  SetPasswordFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: set_password/
-      Handler: app.lambda_handler
-      Runtime: python3.9
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Architectures:
-        - x86_64
-      Events:
-        SetPasswordFunction:
-          Type: Api
-          Properties:
-            RestApiId: !Ref LoginApi
-            Path: /set_password
-            Method: post
-
-
-
 
   GetUsersFunction:
     Type: AWS::Serverless::Function
@@ -890,12 +871,6 @@ Outputs:
   LoginFunction:
     Description: "Login Lambda Function ARN"
     Value: !GetAtt LoginFunction.Arn
-  SetPasswordApi:
-    Description: "API Gateway endpoint URL for Prod stage for Set Password function"
-    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/set_password/"
-  SetPasswordFunction:
-    Description: "Set Password Function Lambda Function ARN"
-    Value: !GetAtt SetPasswordFunction.Arn
 
   GetUsersApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Users function"
