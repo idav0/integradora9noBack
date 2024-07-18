@@ -75,7 +75,8 @@ def update_user_temp_password_patch(username, temp_password, new_password):
                 user = result_username[0]
                 stored_password_hash = user['password']
 
-                confirm_old_password = bcrypt.checkpw(temp_password.encode('utf-8'), stored_password_hash.encode('utf-8'))
+                confirm_old_password = bcrypt.checkpw(temp_password.encode('utf-8'),
+                                                      stored_password_hash.encode('utf-8'))
 
                 if confirm_old_password:
 

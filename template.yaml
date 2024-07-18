@@ -204,7 +204,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
-      Timeout: 15
+      Timeout: 20
       Events:
         InsertUser:
           Type: Api
@@ -228,7 +228,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
-      Timeout: 15
+      Timeout: 20
       Events:
         InsertAdmin:
           Type: Api
@@ -279,7 +279,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
-      Timeout: 15
+      Timeout: 20
       Events:
         UpdateUserTempPasswordPatch:
           Type: Api
@@ -303,7 +303,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
-      Timeout: 15
+      Timeout: 20
       Events:
         UpdateUserPasswordPatch:
           Type: Api

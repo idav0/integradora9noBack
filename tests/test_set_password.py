@@ -17,14 +17,24 @@ class TestApp(unittest.TestCase):
         result = app.lambda_handler(mock_body, None)
         print(result)
 
-    def test_bcrypt(self):
+    def test_bcrypt_encrpyt(self):
 
         passw = 'ContraPrueba123.'
+
+        # Hashing the password
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(passw.encode('utf-8'), salt)
         print(hashed)
+
         hashed_decode = hashed.decode('utf-8')
         print(hashed_decode)
+
+
+    def test_bcrypt_decrypt(self):
+
+        passw = 'ContraPrueba123.'
+
+        hashed_decode = '$2b$12$AJuRDjEnUwbg8lluH29i4ub/5otbFC.UDaBK9hn/ZI29Ov6RJYrEW'
 
         confirm_old_password = bcrypt.checkpw(passw.encode('utf-8'), hashed_decode.encode('utf-8'))
         print(confirm_old_password)
