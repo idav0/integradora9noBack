@@ -1,0 +1,5 @@
+pymysql
+requests
+datetime
+boto3
+botocore

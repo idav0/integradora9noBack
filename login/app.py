@@ -9,7 +9,7 @@ from shared.database_manager import DatabaseConfig
 
 
 def lambda_handler(event, __):
-    error_message = 'Error : %s'
+    error_message = 'Error : %s '
     try:
         body_parameters = json.loads(event["body"])
         username = body_parameters.get('username')
