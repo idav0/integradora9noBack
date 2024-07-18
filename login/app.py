@@ -79,14 +79,16 @@ def lambda_handler(event, __):
         }
 
     except ClientError as e:
+        logging.error('Error AWS ClientError : %s', e)
         return {
             'statusCode': 400,
             'body': json.dumps({"error_message ": e.response['Error']['Message']})
         }
     except Exception as e:
+        logging.error(error_message, e)
         return {
             'statusCode': 500,
-            'body': json.dumps({"error_message": str(e)})
+            'body': json.dumps({"error_message": 'Internal Error - User not found'})
         }
 
 
