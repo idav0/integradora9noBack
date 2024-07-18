@@ -110,13 +110,12 @@ def get_user_by_username(username):
 
             if len(users_email) > 0 or len(users_username) > 0:
 
-                users = users_email if len(users_email) > 0 else users_username
+                user = users_email[0] if len(users_email) > 0 else users_username[0]
 
-                for user in users:
-                    for key, value in user.items():
-                        if isinstance(value, (date, datetime)):
-                            user[key] = value.isoformat()
-                return users
+                for key, value in user.items():
+                    if isinstance(value, (date, datetime)):
+                        user[key] = value.isoformat()
+                return user
             else:
                 raise Exception("Internal Error - User not found")
     except Exception as e:

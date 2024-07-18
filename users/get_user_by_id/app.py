@@ -83,10 +83,10 @@ def get_user_by_id(id_user):
             users = cursor.fetchall()
 
             if len(users) > 0:
-                for user in users:
-                    for key, value in user.items():
-                        if isinstance(value, (date, datetime)):
-                            user[key] = value.isoformat()
+                user = users[0]
+                for key, value in user.items():
+                    if isinstance(value, (date, datetime)):
+                        user[key] = value.isoformat()
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
