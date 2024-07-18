@@ -90,7 +90,7 @@ def get_user_by_id(id_user):
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
-                        "user": users
+                        "user": user
                     }),
                 }
             else:
