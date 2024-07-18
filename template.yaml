@@ -309,7 +309,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref UsersApi
-            Path: /update_user_temp_password_patch
+            Path: /update_user_password_patch
             Method: patch
             Auth:
               Authorizer: CognitoAuthorizer
@@ -936,7 +936,7 @@ Outputs:
     Value: !GetAtt UpdateUserTempPasswordPatchFunction.Arn
   UpdateUserPasswordPatchApi:
     Description: "API Gateway endpoint URL for Prod stage for Update User Password Patch function"
-    Value: !Sub "https://${LoginApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_password_patch/"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_user_password_patch/"
   UpdateUserPasswordPatch:
     Description: "Update User Password Putch Lambda Function ARN"
     Value: !GetAtt UpdateUserPasswordPatchFunction.Arn
