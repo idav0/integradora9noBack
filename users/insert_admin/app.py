@@ -181,7 +181,7 @@ def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
 
 
 def generate_temporary_password(length=12):
-    special_characters = '^$*.[]{}()?-"!@#%&/\\,><\':;|_~`+= '
+    special_characters = '^$*.[]{}()?-"!@#%&,><:;|_~`+= '
     characters = string.ascii_letters + string.digits + special_characters
 
     while True:
