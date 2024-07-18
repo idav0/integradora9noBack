@@ -25,7 +25,7 @@ def lambda_handler(event, context):
         json_body = json.loads(event['body'])
         username = json_body['username']
         email = json_body['email']
-        password = generate_temporary_password()
+        password = 'ContraPrueba123.'
         name = json_body['name']
         lastname = json_body['lastname']
         birthdate = json_body['birthdate']
