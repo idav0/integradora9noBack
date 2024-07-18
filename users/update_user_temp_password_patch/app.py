@@ -73,7 +73,12 @@ def update_user_temp_password_patch(username, temp_password, new_password):
             if len(result_username) > 0:
 
                 user = result_username[0]
-                confirm_old_password = bcrypt.checkpw(user['password'], temp_password.encode('utf-8'))
+                stored_password_hash = user['password']
+
+                if isinstance(stored_password_hash, str):
+                    stored_password_hash = stored_password_hash.encode('utf-8')
+
+                confirm_old_password = bcrypt.checkpw(temp_password.encode('utf-8'), stored_password_hash)
 
                 if confirm_old_password:
 
@@ -119,7 +124,7 @@ def update_user_temp_password_patch(username, temp_password, new_password):
                             hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
                             update_query = "UPDATE Users SET password=%s WHERE username = %s"
-                            cursor.execute(update_query, (hashed_password, username))
+                            cursor.execute(update_query, (hashed_password.decode('utf-8'), username))
                             connection.commit()
                             return {
                                 "statusCode": 200,

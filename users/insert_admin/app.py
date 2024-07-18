@@ -129,7 +129,7 @@ def insert_admin(username, email, password, name, lastname, birthdate, gender, t
 
                         insert_query = ("INSERT INTO Users (username, email, password, name, lastname, birthdate, gender, type) "
                                         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
-                        cursor.execute(insert_query, (username, email, hashed_password, name, lastname, birthdate, gender, type_user))
+                        cursor.execute(insert_query, (username, email, hashed_password.decode('utf-8'), name, lastname, birthdate, gender, type_user))
                         connection.commit()
                         return {
                             "statusCode": 200,
