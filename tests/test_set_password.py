@@ -19,7 +19,7 @@ class TestApp(unittest.TestCase):
 
     def test_bcrypt_encrpyt(self):
 
-        passw = 'ContraPrueba123.'
+        passw = 'Pass12&.'
 
         # Hashing the password
         salt = bcrypt.gensalt()
