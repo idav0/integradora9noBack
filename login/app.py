@@ -104,6 +104,9 @@ def get_user_by_username(username):
             cursor.execute(get_query_username, username)
             users_username = cursor.fetchall()
 
+            logging.info('Users by email: %s', users_email)
+            logging.info('Users by username: %s', users_username)
+
             if len(users_email) > 0 or len(users_username) > 0:
 
                 users = users_email[0] if len(users_email) > 0 else users_username[0]
