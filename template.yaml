@@ -129,6 +129,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Timeout: 15
       Events:
         LoginFunction:
