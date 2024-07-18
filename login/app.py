@@ -104,14 +104,11 @@ def get_user_by_username(username):
             cursor.execute(get_query_username, username)
             users_username = cursor.fetchall()
 
-            print('Users by email: %s', users_email[0])
-            print('Users by username: %s', users_username)
+
 
             if len(users_email) > 0 or len(users_username) > 0:
 
-                users = users_email[0] if len(users_email) > 0 else users_username[0]
-                print('Users: %s', users)
-                users = json.dumps(users)
+                users = users_email if len(users_email) > 0 else users_username
 
                 for user in users:
                     for key, value in user.items():
