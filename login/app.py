@@ -106,16 +106,24 @@ def get_user_by_username(username):
             cursor.execute(get_query_username, username)
             users_username = cursor.fetchall()
 
-
-
-            if len(users_email) > 0 or len(users_username) > 0:
+            if (len(users_email) > 0
+                    or len(users_username) > 0):
 
                 user = users_email[0] if len(users_email) > 0 else users_username[0]
 
-                for key, value in user.items():
-                    if isinstance(value, (date, datetime)):
-                        user[key] = value.isoformat()
-                return user
+                if user['active'] == 1:
+
+                    for key, value in user.items():
+                        if isinstance(value, (date, datetime)):
+                            user[key] = value.isoformat()
+                    return user
+                else:
+                    return {
+                        'statusCode': 401,
+                        'body': json.dumps({
+                            'message': 'User is not active, please contact the administrator'
+                        })
+                    }
             else:
                 raise Exception("Internal Error - User not found")
     except Exception as e:
