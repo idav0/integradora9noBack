@@ -142,7 +142,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
-      Timeout: 15
+      Timeout: 20
       Events:
         LoginFunction:
           Type: Api
@@ -467,6 +467,7 @@ Resources:
         - x86_64
       Layers:
         - !Ref SharedLayer
+      Timeout: 20
       Events:
         UploadProductImage:
           Type: Api
