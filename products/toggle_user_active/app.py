@@ -10,7 +10,7 @@ def lambda_handler(event, context):
     error_500 = {
         "statusCode": 500,
         "body": json.dumps({
-            "error": "Internal Error - User Status Not Toggled"
+            "error": "Internal Error - Product Status Not Toggled"
         })
     }
     required_cognito_groups = ['admin']
@@ -31,15 +31,15 @@ def lambda_handler(event, context):
                 }),
             }
 
-        id_user = event['pathParameters'].get('id')
+        id_product = event['pathParameters'].get('id')
 
-        if id_user is None:
+        if id_product is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        if not id_user.isdigit():
+        if not id_product.isdigit():
             raise ValueError("Bad request - Invalid request format")
 
-        return toggle_user_active(id_user)
+        return toggle_product_active(id_product)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -72,37 +72,37 @@ def lambda_handler(event, context):
         return error_500
 
 
-def toggle_user_active(id_user):
+def toggle_product_active(id_product):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
     try:
         with connection.cursor() as cursor:
-            search_query = "SELECT * FROM Users WHERE id = %s"
-            cursor.execute(search_query, id_user)
+            search_query = "SELECT * FROM Products WHERE id = %s"
+            cursor.execute(search_query, id_product)
             result = cursor.fetchall()
 
             if len(result) > 0:
 
-                user = result[0]
+                product = result[0]
 
-                user_active_status = user['active']
-                query_active_status = 1 if user_active_status == 0 else 0
+                product_active_status = product['active']
+                query_active_status = 1 if product_active_status == 0 else 0
                 message = 'activated' if query_active_status == 1 else 'deactivated'
-                toggle_query = "UPDATE Users SET active = %s WHERE id = %s"
-                cursor.execute(toggle_query, (query_active_status, id_user))
+                toggle_query = "UPDATE Products SET active = %s WHERE id = %s"
+                cursor.execute(toggle_query, (query_active_status, id_product))
                 connection.commit()
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
-                        "message": f"User {message} successfully"
+                        "message": f"Product {message} successfully"
                     }),
                 }
             else:
                 return {
                     "statusCode": 404,
                     "body": json.dumps({
-                        "message": "User not found"
+                        "message": "Product not found"
                     }),
                 }
     except Exception as e:

@@ -470,6 +470,31 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  ToggleProductActiveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/toggle_product_active/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        ToggleProductActive:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /toggle_product_active/{id}
+            Method: patch
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
   DeleteProductByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -1004,6 +1029,12 @@ Outputs:
   UpdateProductPutFunction:
     Description: "Update Product Put Lambda Function ARN"
     Value: !GetAtt UpdateProductPutFunction.Arn
+  ToggleProductActiveApi:
+    Description: "API Gateway endpoint URL for Prod stage for Toggle Product Active function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_product_active/{id}"
+  ToggleProductActiveFunction:
+    Description: "Toggle Product Active Lambda Function ARN"
+    Value: !GetAtt ToggleProductActiveFunction.Arn
   DeleteProductByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Product By Id function"
     Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_product_by_id/{id}"
