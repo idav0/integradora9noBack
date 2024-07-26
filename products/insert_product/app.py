@@ -1,6 +1,10 @@
 import json
 import logging
 import pymysql
+import base64
+import boto3
+from typing import Dict
+import os
 from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
@@ -36,12 +40,16 @@ def lambda_handler(event, context):
         description = json_body['description']
         price = json_body['price']
         stock = json_body['stock']
-        image = json_body['image']
+        discount = json_body['discount']
+        image_data = json_body['image']
+        image_type = json_body['image_type']
+        category_id = json_body['category_id']
 
-        if name is None or description is None or price is None or stock is None or image is None:
+        if (name is None or description is None or price is None or stock is None
+                or discount is None or category_id is None):
             raise ValueError("Bad request - Parameters are missing")
 
-        return insert_product(name,  description, price, stock, image)
+        return insert_product(name, description, price, stock, discount, image_data, image_type, category_id)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -74,23 +82,82 @@ def lambda_handler(event, context):
         return error_500
 
 
-def insert_product(name,  description, price, stock, image):
+def insert_product(name,  description, price, stock, discount, image_data, image_type, category_id):
     db = DatabaseConfig()
     connection = db.get_new_connection()
+
     try:
-        with connection.cursor() as cursor:
-            insert_query = "INSERT INTO Products ( name, description, price, stock, image) VALUES ( %s, %s, %s, %s, %s)"
-            cursor.execute(insert_query, (name,  description, price, stock, image))
-            connection.commit()
-            return {
-                "statusCode": 200,
-                "body": json.dumps({
-                    "message": "Product inserted successfully"
-                }),
-            }
+        if image_data is not None and image_type is not None:
+            with connection.cursor() as cursor:
+                search_query = "SELECT * FROM Products ORDER BY id DESC LIMIT 1"
+                cursor.execute(search_query)
+                result = cursor.fetchall()
+
+                if len(result) > 0:
+                    last_id = result[0]['id']
+                else:
+                    last_id = 0
+
+                image_data = base64.b64decode(image_data)
+                object_key = "products/" + str(last_id + 1) + "." + image_type
+
+                region_name = os.environ.get('REGION_NAME')
+                secret_name = os.environ.get('SECRET_NAME')
+
+                if region_name is None or secret_name is None:
+                    raise ValueError("Internal Error - Parameters are missing")
+
+                secrets = get_secret(secret_name, region_name)
+
+                if secrets is None or secrets['BUCKET_NAME'] is None:
+                    raise ValueError("Internal Error - Parameters are missing")
+
+                bucket_name = secrets['BUCKET_NAME']
+
+                s3 = boto3.client('s3')
+                s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
+
+                object_url = f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{object_key}"
+
+                insert_query = ("INSERT INTO Products (name, description, price, stock, discount, image, Category_id) "
+                                "VALUES ( %s, %s, %s, %s, %s, %s, %s)")
+                cursor.execute(insert_query, (name,  description, price, stock, discount, object_url, category_id))
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({
+                        "message": "Product inserted successfully with image",
+                    }),
+                }
+        else:
+            with connection.cursor() as cursor:
+                insert_query = ("INSERT INTO Products (name, description, price, stock, discount, Category_id) "
+                                "VALUES ( %s, %s, %s, %s, %s, %s)")
+                cursor.execute(insert_query, (name,  description, price, stock, discount, category_id))
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "body": json.dumps({
+                        "message": "Product inserted successfully without image",
+                    }),
+                }
+
     except Exception as e:
         logging.error('Error : %s', e)
         connection.rollback()
         raise e
     finally:
         connection.close()
+
+
+def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
+    session = boto3.session.Session()
+    client = session.client(service_name='secretsmanager', region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        logging.error("Failed to retrieve secret: %s", e)
+        raise e
+
+    return json.loads(get_secret_value_response['SecretString'])
