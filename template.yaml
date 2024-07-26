@@ -71,6 +71,15 @@ Resources:
                   - cognito-idp:GetUser
                   - cognito-idp:ListUsers
                 Resource: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                Resource: arn:aws:s3:::integradoraeasyshop/*
 
 
   UsersApi:
@@ -437,6 +446,31 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /insert_product
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  UploadProductImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: products/upload_product_image
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        UploadProductImage:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /upload_product_image
             Method: post
             Auth:
               Authorizer: CognitoAuthorizer
@@ -1023,6 +1057,12 @@ Outputs:
   InsertProductFunction:
     Description: "Insert Product Lambda Function ARN"
     Value: !GetAtt InsertProductFunction.Arn
+  UploadProductImageApi:
+    Description: "API Gateway endpoint URL for Prod stage for Upload Product Image function"
+    Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/upload_product_image/"
+  UploadProductImageFunction:
+    Description: "Upload Product ImageLambda Function ARN"
+    Value: !GetAtt UploadProductImageFunction.Arn
   UpdateProductPutApi:
     Description: "API Gateway endpoint URL for Prod stage for Update Product Put function"
     Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_product_put/"
