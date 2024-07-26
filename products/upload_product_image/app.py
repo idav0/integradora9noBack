@@ -4,6 +4,7 @@ import base64
 import pymysql
 from botocore.exceptions import ClientError
 import boto3
+from typing import Dict
 import os
 from shared.database_manager import DatabaseConfig
 

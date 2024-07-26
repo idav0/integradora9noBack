@@ -1,6 +1,7 @@
 import unittest
 import json
 import bcrypt
+import base64
 
 
 mock_body = {
@@ -39,4 +40,8 @@ class TestApp(unittest.TestCase):
         confirm_old_password = bcrypt.checkpw(passw.encode('utf-8'), hashed_decode.encode('utf-8'))
         print(confirm_old_password)
 
+    def test_img_base64(self):
+        with open("/Users/Darien/Downloads/LOGO_UTEZ2016.png", "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            print(encoded_string)
 
