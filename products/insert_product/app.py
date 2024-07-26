@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         price = json_body['price']
         stock = json_body['stock']
         discount = json_body['discount']
-        image_data = json_body['image']
+        image_data = json_body['image_data']
         image_type = json_body['image_type']
         category_id = json_body['category_id']
 
