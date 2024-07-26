@@ -130,6 +130,18 @@ Resources:
       Name: LoginApi
       StageName: Prod
 
+  CategoriesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: CategoriesApi
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+
+
 
   LoginFunction:
     Type: AWS::Serverless::Function
@@ -974,6 +986,32 @@ Resources:
           RDS_DB: "integradorashopeasy"
 
 
+  GetCategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/get_categories/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        GetProducts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /get_categories
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+
 
 Outputs:
   LambdaExecutionRoleArn:
@@ -1197,3 +1235,10 @@ Outputs:
   DeletePurchaseByIdFunction:
     Description: "Delete Purchase By Id Lambda Function ARN"
     Value: !GetAtt DeletePurchaseByIdFunction.Arn
+
+  GetCategoriesApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Categories function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_categories/"
+  GetCategoriesFunction:
+    Description: "Get Categories Lambda Function ARN"
+    Value: !GetAtt GetCategoriesFunction.Arn
