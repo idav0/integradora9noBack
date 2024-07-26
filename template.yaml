@@ -320,6 +320,31 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  ToggleUserActiveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/toggle_user_active/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        ToggleUserActive:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UsersApi
+            Path: /toggle_user_active/{id}
+            Method: patch
+            Auth:
+              Authorizer: CognitoAuthorizer
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
   DeleteUserByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -942,6 +967,12 @@ Outputs:
   UpdateUserPasswordPatch:
     Description: "Update User Password Putch Lambda Function ARN"
     Value: !GetAtt UpdateUserPasswordPatchFunction.Arn
+  ToggleUserActiveApi:
+    Description: "API Gateway endpoint URL for Prod stage for Toggle User Active function"
+    Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_user_active/{id}"
+  ToggleUserActiveFunction:
+    Description: "Toggle User Active Lambda Function ARN"
+    Value: !GetAtt ToggleUserActiveFunction.Arn
   DeleteUserByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete User By Id function"
     Value: !Sub "https://${UsersApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_user_by_id/{id}"
