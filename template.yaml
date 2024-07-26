@@ -473,7 +473,7 @@ Resources:
   ToggleProductActiveFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: users/toggle_product_active/
+      CodeUri: products/toggle_product_active/
       Handler: app.lambda_handler
       Runtime: python3.9
       Role: !GetAtt LambdaExecutionRole.Arn
