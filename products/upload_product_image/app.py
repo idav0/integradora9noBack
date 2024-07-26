@@ -11,8 +11,9 @@ from shared.database_manager import DatabaseConfig
 
 def lambda_handler(event, context):
 
-    image_data = base64.b64decode(event['body']['image_data'])
-    image_name = event['body']['image_name']
+    json_body = json.loads(event['body'])
+    image_data = base64.b64decode(json_body['image_data'])
+    image_name = json_body['image_name']
     object_key = "products/" + image_name
 
     region_name = os.environ.get('REGION_NAME')
