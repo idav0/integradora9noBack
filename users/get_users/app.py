@@ -82,7 +82,7 @@ def get_users():
                             user[key] = value.isoformat()
                 return {
                     "statusCode": 200,
-                    "body": json.dumps(users)
+                    "users": users
                 }
             else:
                 return {

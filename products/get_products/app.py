@@ -78,7 +78,7 @@ def get_products():
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
-                        "product": products
+                        "products": products
                     }),
                 }
             else:

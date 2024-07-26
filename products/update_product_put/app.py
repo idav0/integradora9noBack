@@ -37,15 +37,17 @@ def lambda_handler(event, context):
         description = json_body['description']
         price = json_body['price']
         stock = json_body['stock']
-        image = json_body['image']
+        discount = json_body['discount']
+        #image = json_body['image']
+        category_id = json_body['category_id']
 
-        if id_product is None or name is None or description is None or price is None or stock is None or image is None:
+        if id_product is None or name is None or description is None or price is None or stock is None or discount is None or category_id is None:
             raise ValueError("Bad request - Parameters are missing")
 
         if not id_product.isdigit():
             raise ValueError("Bad request - Invalid request format")
 
-        return update_product_put(id_product, name,  description, price, stock, image)
+        return update_product_put(id_product, name,  description, price, stock, discount, category_id)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -78,7 +80,7 @@ def lambda_handler(event, context):
         return error_500
 
 
-def update_product_put(id_product, name, description, price, stock, image):
+def update_product_put(id_product, name, description, price, stock, discount, category_id):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
@@ -89,9 +91,9 @@ def update_product_put(id_product, name, description, price, stock, image):
             result = cursor.fetchall()
 
             if len(result) > 0:
-                insert_query = ("UPDATE Products SET name = %s, description = %s, price = %s, stock = %s, image = %s  "
+                update_query = ("UPDATE Products SET name = %s, description = %s, price = %s, stock = %s, discount = %s, category_id = %s "
                                 "WHERE id = %s")
-                cursor.execute(insert_query, (name, description, price, stock, image, id_product))
+                cursor.execute(update_query, (name, description, price, stock, discount, category_id, id_product))
                 connection.commit()
                 return {
                     "statusCode": 200,
