@@ -87,7 +87,7 @@ def insert_product(name,  description, price, stock, discount, image_data, image
     connection = db.get_new_connection()
 
     try:
-        if image_data is not None and image_type is not None:
+        if image_data != "" and image_type != "":
             with connection.cursor() as cursor:
                 search_query = "SELECT * FROM Products ORDER BY id DESC LIMIT 1"
                 cursor.execute(search_query)
