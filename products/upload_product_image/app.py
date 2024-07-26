@@ -11,29 +11,39 @@ from shared.database_manager import DatabaseConfig
 
 def lambda_handler(event, context):
 
-    json_body = json.loads(event['body'])
-    image_data = base64.b64decode(json_body['image_data'])
-    image_name = json_body['image_name']
-    object_key = "products/" + image_name
+    try:
+        json_body = json.loads(event['body'])
+        image_data = base64.b64decode(json_body['image_data'])
+        image_name = json_body['image_name']
+        object_key = "products/" + image_name
 
-    region_name = os.environ.get('REGION_NAME')
-    secret_name = os.environ.get('SECRET_NAME')
+        region_name = os.environ.get('REGION_NAME')
+        secret_name = os.environ.get('SECRET_NAME')
 
-    secrets = get_secret(secret_name, region_name)
+        secrets = get_secret(secret_name, region_name)
 
-    bucket_name = secrets['BUCKET_NAME']
+        bucket_name = secrets['BUCKET_NAME']
 
-    s3 = boto3.client('s3')
-    s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
+        s3 = boto3.client('s3')
+        s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
 
-    object_url = f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{object_key}"
+        object_url = f"https://{bucket_name}.s3.{region_name}.amazonaws.com/{object_key}"
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "image_url": object_url
-        })
-    }
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "image_url": object_url
+            })
+        }
+
+    except Exception as e:
+        logging.error('Error : %s', e)
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "error": "Internal Error - Image Not Uploaded"
+            })
+        }
 
 
 def get_secret(secret_name: str, region_name: str) -> Dict[str, str]:
