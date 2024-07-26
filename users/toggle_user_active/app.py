@@ -88,13 +88,14 @@ def toggle_user_active(id_user):
 
                 user_active_status = user['active']
                 query_active_status = 1 if user_active_status == 0 else 0
+                message = 'activated' if query_active_status == 1 else 'deactivated'
                 toggle_query = "UPDATE Users SET active = %s WHERE id = %s"
                 cursor.execute(toggle_query, (query_active_status, id_user))
                 connection.commit()
                 return {
                     "statusCode": 200,
                     "body": json.dumps({
-                        "message": "User deleted successfully"
+                        "message": f"User {message} successfully"
                     }),
                 }
             else:
