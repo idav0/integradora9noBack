@@ -44,9 +44,6 @@ def lambda_handler(event, context):
         if id_product is None or name is None or description is None or price is None or stock is None or discount is None or category_id is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        if not id_product.isdigit():
-            raise ValueError("Bad request - Invalid request format")
-
         return update_product_put(id_product, name,  description, price, stock, discount, category_id)
 
     except KeyError as e:
