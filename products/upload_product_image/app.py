@@ -21,7 +21,7 @@ def lambda_handler(event, context):
 
     secrets = get_secret(secret_name, region_name)
 
-    bucket_name = secrets['bucket_name']
+    bucket_name = secrets['BUCKET_NAME']
 
     s3 = boto3.client('s3')
     s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_data)
