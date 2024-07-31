@@ -77,6 +77,11 @@ def get_products():
             if len(products) > 0:
                 return {
                     "statusCode": 200,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Headers": "Content-Type,Authorization",
+                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+                    },
                     "body": json.dumps({
                         "products": products
                     }),
@@ -84,6 +89,11 @@ def get_products():
             else:
                 return {
                     "statusCode": 404,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Headers": "Content-Type,Authorization",
+                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+                    },
                     "body": json.dumps({
                         "message": "Products not found"
                     }),
