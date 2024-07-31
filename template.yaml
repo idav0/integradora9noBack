@@ -94,6 +94,10 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+      Cors:
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
 
   ProductsApi:
     Type: AWS::Serverless::Api
@@ -105,6 +109,10 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+      Cors:
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
 
   PaymentMethodsApi:
     Type: AWS::Serverless::Api
@@ -140,6 +148,10 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+      Cors:
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
 
 
 
