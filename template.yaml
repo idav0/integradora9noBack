@@ -429,12 +429,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: CognitoAuthorizer
-        OptionsProducts:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ProductsApi
-            Path: /get_products
-            Method: options
       Environment:
         Variables:
           REGION_NAME: "us-east-1"

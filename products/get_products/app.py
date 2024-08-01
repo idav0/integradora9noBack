@@ -4,14 +4,14 @@ import pymysql
 from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
+}
 
 def lambda_handler(event, context):
     error_message = 'Error : %s'
-    cors_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
-    }
     error_500 = {
         "statusCode": 500,
         "headers": cors_headers,
@@ -85,11 +85,7 @@ def get_products():
             if len(products) > 0:
                 return {
                     "statusCode": 200,
-                    "headers": {
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Headers': '*',
-                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
-                    },
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "products": products
                     }),
@@ -97,11 +93,7 @@ def get_products():
             else:
                 return {
                     "statusCode": 404,
-                    "headers": {
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Headers': '*',
-                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
-                    },
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "message": "Products not found"
                     }),
