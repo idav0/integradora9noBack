@@ -8,9 +8,9 @@ from shared.database_manager import DatabaseConfig
 def lambda_handler(event, context):
     error_message = 'Error : %s'
     cors_headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type,Authorization",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
     }
     error_500 = {
         "statusCode": 500,
@@ -86,9 +86,9 @@ def get_products():
                 return {
                     "statusCode": 200,
                     "headers": {
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Content-Type,Authorization",
-                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
                     },
                     "body": json.dumps({
                         "products": products
@@ -98,9 +98,9 @@ def get_products():
                 return {
                     "statusCode": 404,
                     "headers": {
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Content-Type,Authorization",
-                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
                     },
                     "body": json.dumps({
                         "message": "Products not found"
