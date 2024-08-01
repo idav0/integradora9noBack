@@ -10,6 +10,7 @@ cors_headers = {
     'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
 }
 
+
 def lambda_handler(event, context):
     error_message = 'Error : %s'
     error_500 = {
@@ -46,14 +47,14 @@ def lambda_handler(event, context):
             "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
-            })
+            }),
         }
 
     except ValueError as e:
         logging.error(error_message, e)
         return {
             "statusCode": 400,
-            "headers": cors_headers
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })
