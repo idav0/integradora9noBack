@@ -115,7 +115,7 @@ Resources:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
       Cors:
         AllowOrigin: "'*'"
-        AllowHeaders: "'*'"
+        AllowHeaders: "'Content-Type'"
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
 
   PaymentMethodsApi:
