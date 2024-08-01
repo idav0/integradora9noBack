@@ -33,6 +33,7 @@ def lambda_handler(event, context):
                 group in required_cognito_groups for group in user_cognito_groups):
             return {
                 "statusCode": 403,
+                "headers": cors_headers,
                 "body": json.dumps({
                     "message": "Forbidden"
                 }),
