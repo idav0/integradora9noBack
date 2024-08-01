@@ -409,6 +409,23 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  SettingProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: setting/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Events:
+        InsertTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProductsApi
+            Path: /{proxy+}
+            Method: options
+
   GetProductsFunction:
     Type: AWS::Serverless::Function
     Properties:
