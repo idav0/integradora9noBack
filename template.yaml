@@ -10,10 +10,7 @@ Globals:
   Api:
     Auth:
       DefaultAuthorizer: NONE
-    Cors:
-      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-      AllowHeaders: "'*'"
-      AllowOrigin: "'*'"
+
 
 Resources:
 
@@ -113,10 +110,6 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
-      Cors:
-        AllowOrigin: "'*'"
-        AllowHeaders: "'Content-Type,Authorization'"
-        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
 
   PaymentMethodsApi:
     Type: AWS::Serverless::Api
