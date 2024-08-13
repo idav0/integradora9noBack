@@ -7,8 +7,7 @@ from shared.database_manager import DatabaseConfig
 cors_headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
-    'Content-Type': 'application/json'
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
 }
 
 

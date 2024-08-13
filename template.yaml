@@ -10,6 +10,10 @@ Globals:
   Api:
     Auth:
       DefaultAuthorizer: NONE
+    Cors:
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
 
 
 Resources:
@@ -105,6 +109,10 @@ Resources:
     Properties:
       Name: ProductsApi
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'*'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
