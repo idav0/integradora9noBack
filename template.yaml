@@ -115,7 +115,7 @@ Resources:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
       Cors:
         AllowOrigin: "'*'"
-        AllowHeaders: "'Content-Type'"
+        AllowHeaders: "'Content-Type,Authorization'"
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
 
   PaymentMethodsApi:
@@ -156,7 +156,6 @@ Resources:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,Authorization'"
         AllowOrigin: "'*'"
-
 
 
   LoginFunction:
@@ -1155,7 +1154,7 @@ Outputs:
     Value: !Sub "https://${ProductsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_product_by_id/{id}"
   DeleteProductByIdFunction:
     Description: "Delete Product By Id Lambda Function ARN"
-    Value: !GetAtt DeleteUserByIdFunction.Arn
+    Value: !GetAtt DeleteProductByIdFunction.Arn
 
   GetPaymentMethodsApi:
     Description: "API Gateway endpoint URL for Prod stage for Get Payment Methods function"
@@ -1276,3 +1275,4 @@ Outputs:
   GetCategoriesFunction:
     Description: "Get Categories Lambda Function ARN"
     Value: !GetAtt GetCategoriesFunction.Arn
+

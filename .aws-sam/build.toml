@@ -24,18 +24,9 @@ codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integra
 runtime = "python3.9"
 architecture = "x86_64"
 handler = "app.lambda_handler"
-manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
+manifest_hash = "6da295ef42a2ca7f864558dc6d9a2f32"
 packagetype = "Zip"
 functions = ["InsertUserFunction"]
-
-[function_build_definitions.ed87ff27-4b7a-42f9-a3b8-44548d314665]
-codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/update_user_put"
-runtime = "python3.9"
-architecture = "x86_64"
-handler = "app.lambda_handler"
-manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
-packagetype = "Zip"
-functions = ["UpdateUserPutFunction"]
 
 [function_build_definitions.88b9548a-4d35-4594-aea7-83a7b81b415e]
 codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/delete_user_by_id"
@@ -252,5 +243,131 @@ handler = "app.lambda_handler"
 manifest_hash = "557f8bf28371a30c9413447e2a104337"
 packagetype = "Zip"
 functions = ["DeletePurchaseByIdFunction"]
+
+[function_build_definitions.616b3917-5689-4f57-91e0-cc4cf2f1b1dd]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/login"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "78f73b8e34864965ff4892c45382e58e"
+packagetype = "Zip"
+functions = ["LoginFunction"]
+
+[function_build_definitions.ee4c70e8-8e87-444b-aca7-33d08d2dff0f]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/insert_admin"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "6da295ef42a2ca7f864558dc6d9a2f32"
+packagetype = "Zip"
+functions = ["InsertAdminFunction"]
+
+[function_build_definitions.6101f074-ec27-42d2-a97d-b1ac334f7582]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/update_user_data_patch"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "6da295ef42a2ca7f864558dc6d9a2f32"
+packagetype = "Zip"
+functions = ["UpdateUserDataPatchFunction"]
+
+[function_build_definitions.e0070b24-27d7-4862-b5ab-e452b0c408b7]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/update_user_temp_password_patch"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "6da295ef42a2ca7f864558dc6d9a2f32"
+packagetype = "Zip"
+functions = ["UpdateUserTempPasswordPatchFunction"]
+
+[function_build_definitions.d1c2921d-5be4-4060-aa4c-2a40f26963d7]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/update_user_password_patch"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "6da295ef42a2ca7f864558dc6d9a2f32"
+packagetype = "Zip"
+functions = ["UpdateUserPasswordPatchFunction"]
+
+[function_build_definitions.4c66c1b7-57e4-49d1-ba47-3afa731356eb]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/users/toggle_user_active"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "557f8bf28371a30c9413447e2a104337"
+packagetype = "Zip"
+functions = ["ToggleUserActiveFunction"]
+
+[function_build_definitions.43fea233-8b91-4792-bb75-090e9fc593a7]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/setting"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
+packagetype = "Zip"
+functions = ["SettingProductsFunction"]
+
+[function_build_definitions.4cfad90c-e680-4d0e-9530-c4dba8223ad1]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/products/upload_product_image"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
+packagetype = "Zip"
+functions = ["UploadProductImageFunction"]
+
+[function_build_definitions.121f3d1f-1dab-4661-b6fe-7d26310de194]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/products/toggle_product_active"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "557f8bf28371a30c9413447e2a104337"
+packagetype = "Zip"
+functions = ["ToggleProductActiveFunction"]
+
+[function_build_definitions.1ceed5e6-4e7c-4f74-8084-9d7dfa1a199e]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/categories/get_categories"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "557f8bf28371a30c9413447e2a104337"
+packagetype = "Zip"
+functions = ["GetCategoriesFunction"]
+
+[function_build_definitions.98897cec-cc3c-42d8-b8e7-db11449df3ca]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/modelo/get_modelo"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "557f8bf28371a30c9413447e2a104337"
+packagetype = "Zip"
+functions = ["GetModeloFunction"]
+
+[function_build_definitions.01ed1787-a1f4-4e8d-b761-cdedd7a7cc5c]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/modelo/insert_modelo"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
+packagetype = "Zip"
+functions = ["InsertModeloFunction"]
+
+[function_build_definitions.8d96bc3d-5c53-4c43-950d-0f1d02b0e038]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/modelo/update_modelo_put"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "57e7f7fb54f59d0c9b61cf8a1f514395"
+packagetype = "Zip"
+functions = ["UpdateModeloPutFunction"]
+
+[function_build_definitions.c28e3132-444e-4a86-9474-3a8509815e9b]
+codeuri = "/Users/Darien/Documents/IDGS 9no/Des Web Integral/Integradora/integradora9noBack/modelo/delete_modelo_by_id"
+runtime = "python3.9"
+architecture = "x86_64"
+handler = "app.lambda_handler"
+manifest_hash = "557f8bf28371a30c9413447e2a104337"
+packagetype = "Zip"
+functions = ["DeleteModeloByIdFunction"]
 
 [layer_build_definitions]
