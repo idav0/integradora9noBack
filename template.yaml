@@ -109,7 +109,10 @@ Resources:
     Properties:
       Name: ProductsApi
       StageName: Prod
-      Cors: True
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'*'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
