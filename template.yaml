@@ -444,6 +444,7 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_products
             Method: get
+            Cors: true
             Auth:
               Authorizer: CognitoAuthorizer
       Environment:
