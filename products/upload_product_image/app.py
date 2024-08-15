@@ -8,11 +8,25 @@ from typing import Dict
 import os
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS Preflight Response OK"
+            })
+        }
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
+        "headers": cors_headers,
         "body": json.dumps({
             "error": "Internal Error - Image Not Uploaded"
         })
@@ -30,6 +44,7 @@ def lambda_handler(event, context):
                 group in required_cognito_groups for group in user_cognito_groups):
             return {
                 "statusCode": 403,
+                "headers": cors_headers,
                 "body": json.dumps({
                     "message": "Forbidden"
                 }),
@@ -82,6 +97,7 @@ def lambda_handler(event, context):
 
                     return {
                         "statusCode": 200,
+                        "headers": cors_headers,
                         "body": json.dumps({
                             "image_url": object_url
                         })
@@ -90,6 +106,7 @@ def lambda_handler(event, context):
                 else:
                     return {
                         "statusCode": 404,
+                        "headers": cors_headers,
                         "body": json.dumps({
                             "error": "Product not found, image not uploaded"
                         })
@@ -108,6 +125,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
             })
@@ -117,6 +135,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })

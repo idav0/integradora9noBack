@@ -528,7 +528,17 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /upload_product_image
-            Method: post
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /upload_product_image
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -551,7 +561,17 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /update_product_put
-            Method: put
+            Method: PUT
+            Auth:
+                Authorizer: CognitoAuthorizer
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /update_product_put
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -574,7 +594,17 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /toggle_product_active/{id}
-            Method: patch
+            Method: PATCH
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /toggle_product_active/{id}
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -597,7 +627,17 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /delete_product_by_id/{id}
-            Method: delete
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /delete_product_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
