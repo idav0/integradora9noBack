@@ -113,11 +113,7 @@ Resources:
         AllowOrigin: "'*'"
         AllowHeaders: "'*'"
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
-      Auth:
-        DefaultAuthorizer: CognitoAuthorizer
-        Authorizers:
-          CognitoAuthorizer:
-            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
+
 
   PaymentMethodsApi:
     Type: AWS::Serverless::Api
@@ -427,8 +423,6 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_products
             Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
