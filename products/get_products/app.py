@@ -12,7 +12,6 @@ cors_headers = {
 
 
 def lambda_handler(event, context):
-
     if event['httpMethod'] == 'OPTIONS':
         return {
             "statusCode": 200,
@@ -34,6 +33,21 @@ def lambda_handler(event, context):
     cognito_groups = 'cognito:groups'
 
     try:
+
+        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
+        user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
+            else user.get(cognito_groups, [])
+
+        if user.get(cognito_groups) is None or not any(
+                group in required_cognito_groups for group in user_cognito_groups):
+            return {
+                "statusCode": 403,
+                "headers": cors_headers,
+                "body": json.dumps({
+                    "message": "Forbidden"
+                }),
+            }
+
         return get_products()
 
     except KeyError as e:
