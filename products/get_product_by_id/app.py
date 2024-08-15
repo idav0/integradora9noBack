@@ -4,11 +4,27 @@ import pymysql
 from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
+
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS preflight response OK"
+            })
+        }
+
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
+        "headers": cors_headers,
         "body": json.dumps({
             "error": "Internal Error - Product Not Found"
         })
@@ -26,6 +42,7 @@ def lambda_handler(event, context):
                 group in required_cognito_groups for group in user_cognito_groups):
             return {
                 "statusCode": 403,
+                "headers": cors_headers,
                 "body": json.dumps({
                     "message": "Forbidden"
                 }),
@@ -45,6 +62,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
             })
@@ -54,6 +72,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })
@@ -85,6 +104,7 @@ def get_product_by_id(id_product):
             if len(products) > 0:
                 return {
                     "statusCode": 200,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "product": products
                     }),
@@ -92,6 +112,7 @@ def get_product_by_id(id_product):
             else:
                 return {
                     "statusCode": 404,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "message": "Product not found"
                     }),

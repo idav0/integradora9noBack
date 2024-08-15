@@ -11,9 +11,9 @@ Globals:
     Auth:
       DefaultAuthorizer: NONE
     Cors:
-      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-      AllowHeaders: "'*'"
       AllowOrigin: "'*'"
+      AllowHeaders: "'Content-Type,Authorization'"
+      AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
 
 
 Resources:
@@ -100,9 +100,9 @@ Resources:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
       Cors:
-        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
         AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
 
   ProductsApi:
     Type: AWS::Serverless::Api
@@ -112,7 +112,7 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
         AllowHeaders: "'Content-Type,Authorization'"
-        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -462,6 +462,14 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_product_by_id/{id}
             Method: get
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /get_product_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
