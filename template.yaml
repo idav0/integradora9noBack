@@ -113,6 +113,10 @@ Resources:
         AllowOrigin: "'*'"
         AllowHeaders: "'Content-Type,Authorization'"
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: OPTIONS
+          AuthorizationType: NONE
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
