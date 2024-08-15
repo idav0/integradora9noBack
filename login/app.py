@@ -7,8 +7,22 @@ from botocore.exceptions import ClientError
 from datetime import date, datetime
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
 
 def lambda_handler(event, __):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS preflight response OK"
+            })
+        }
+
     error_message = 'Error : %s '
     try:
         body_parameters = json.loads(event["body"])
@@ -53,6 +67,7 @@ def lambda_handler(event, __):
 
             return {
                 'statusCode': 200,
+                "headers": cors_headers,
                 'body': json.dumps({
                     'auth': {
                         'id_token': id_token,
@@ -68,6 +83,7 @@ def lambda_handler(event, __):
         logging.error(error_message, e)
         return {
             'statusCode': 400,
+            "headers": cors_headers,
             'body': json.dumps({"error_message": "Bad request - Invalid request format"})
         }
 
@@ -75,6 +91,7 @@ def lambda_handler(event, __):
         logging.error(error_message, e)
         return {
             'statusCode': 400,
+            "headers": cors_headers,
             'body': json.dumps({"error_message": str(e)})
         }
 
@@ -82,12 +99,14 @@ def lambda_handler(event, __):
         logging.error('Error AWS ClientError : %s', e)
         return {
             'statusCode': 400,
+            "headers": cors_headers,
             'body': json.dumps({"error_message ": e.response['Error']['Message']})
         }
     except Exception as e:
         logging.error(error_message, e)
         return {
             'statusCode': 500,
+            "headers": cors_headers,
             'body': json.dumps({"error_message": 'Internal Error - User not found'})
         }
 
@@ -120,6 +139,7 @@ def get_user_by_username(username):
                 else:
                     return {
                         'statusCode': 401,
+                        "headers": cors_headers,
                         'body': json.dumps({
                             'message': 'User is not active, please contact the administrator'
                         })

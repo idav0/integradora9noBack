@@ -94,15 +94,16 @@ Resources:
     Properties:
       Name: UsersApi
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
-      Cors:
-        AllowOrigin: "'*'"
-        AllowHeaders: "'Content-Type,Authorization'"
-        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
+
 
   ProductsApi:
     Type: AWS::Serverless::Api
@@ -178,7 +179,15 @@ Resources:
           Properties:
             RestApiId: !Ref LoginApi
             Path: /login
-            Method: post
+            Method: POST
+        OptionsLogin:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: OPTIONS
+            RestApiId: !Ref LoginApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
