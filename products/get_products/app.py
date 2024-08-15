@@ -17,7 +17,7 @@ def lambda_handler(event, context):
             "statusCode": 200,
             "headers": cors_headers,
             "body": json.dumps({
-                "message": "CORS preflight response OK"
+                "message": "CORS Preflight Response OK"
             })
         }
 
