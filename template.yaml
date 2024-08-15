@@ -429,7 +429,7 @@ Resources:
             Path: /get_products
             Method: GET
           Auth:
-            Authorizer: CognitoAuthorizer
+            Authorizer: NONE
         OptionsProducts:
           Type: Api
           Properties:
@@ -461,7 +461,9 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /get_product_by_id/{id}
-            Method: get
+            Method: GET
+          Auth:
+            Authorizer: CognitoAuthorizer
         OptionsProducts:
           Type: Api
           Properties:
@@ -492,7 +494,17 @@ Resources:
           Properties:
             RestApiId: !Ref ProductsApi
             Path: /insert_product
-            Method: post
+            Method: POST
+          Auth:
+            Authorizer: CognitoAuthorizer
+        OptionsProducts:
+          Type: Api
+          Properties:
+            Path: /insert_product
+            Method: OPTIONS
+            RestApiId: !Ref ProductsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
