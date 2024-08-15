@@ -113,6 +113,7 @@ Resources:
         AllowOrigin: "'*'"
         AllowHeaders: "'Content-Type,Authorization'"
         AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+        AllowCredentials: "'true'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
