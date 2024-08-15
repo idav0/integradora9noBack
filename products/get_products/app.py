@@ -7,12 +7,22 @@ from shared.database_manager import DatabaseConfig
 cors_headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
     'Access-Control-Allow-Credentials': True
 }
 
 
 def lambda_handler(event, context):
+
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS preflight response"
+            })
+        }
+
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
