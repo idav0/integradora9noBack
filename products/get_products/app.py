@@ -30,7 +30,6 @@ def lambda_handler(event, context):
         })
     }
 
-
     try:
         return get_products()
 

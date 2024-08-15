@@ -4,39 +4,39 @@ import pymysql
 from botocore.exceptions import ClientError
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS Preflight Response OK"
+            })
+        }
+
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
+        "headers": cors_headers,
         "body": json.dumps({
             "error": "Internal Error - Categories Not Found"
         })
     }
-    required_cognito_groups = ['admin', 'user']
-    cognito_groups = 'cognito:groups'
 
     try:
-
-        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
-        user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
-            else user.get(cognito_groups, [])
-
-        if user.get(cognito_groups) is None or not any(
-                group in required_cognito_groups for group in user_cognito_groups):
-            return {
-                "statusCode": 403,
-                "body": json.dumps({
-                    "message": "Forbidden"
-                }),
-            }
-
         return get_categories()
 
     except KeyError as e:
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
             })
@@ -46,6 +46,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })
@@ -77,6 +78,7 @@ def get_categories():
             if len(categories) > 0:
                 return {
                     "statusCode": 200,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "categories": categories
                     }),
@@ -84,6 +86,7 @@ def get_categories():
             else:
                 return {
                     "statusCode": 404,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "message": "Categories not found"
                     }),
