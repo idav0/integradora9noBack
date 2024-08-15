@@ -463,7 +463,7 @@ Resources:
             Path: /get_product_by_id/{id}
             Method: GET
           Auth:
-            Authorizer: CognitoAuthorizer
+            Authorizer: NONE
         OptionsProducts:
           Type: Api
           Properties:
