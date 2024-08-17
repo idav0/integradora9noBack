@@ -377,7 +377,7 @@ Resources:
         UpdateUserTempPasswordPatch:
           Type: Api
           Properties:
-            RestApiId: !Ref LoginApi
+            RestApiId: !Ref UsersApi
             Path: /update_user_temp_password_patch
             Method: PATCH
             Auth:
