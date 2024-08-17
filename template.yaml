@@ -279,8 +279,8 @@ Resources:
             RestApiId: !Ref UsersApi
             Path: /insert_user
             Method: POST
-        Auth:
-          Authorizer: NONE
+            Auth:
+              Authorizer: NONE
         OptionsUsers:
           Type: Api
           Properties:
@@ -513,8 +513,8 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_products
             Method: GET
-          Auth:
-            Authorizer: NONE
+            Auth:
+              Authorizer: NONE
         OptionsProducts:
           Type: Api
           Properties:
@@ -547,8 +547,8 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /get_product_by_id/{id}
             Method: GET
-          Auth:
-            Authorizer: NONE
+            Auth:
+              Authorizer: NONE
         OptionsProducts:
           Type: Api
           Properties:
@@ -580,8 +580,8 @@ Resources:
             RestApiId: !Ref ProductsApi
             Path: /insert_product
             Method: POST
-          Auth:
-            Authorizer: CognitoAuthorizer
+            Auth:
+              Authorizer: CognitoAuthorizer
         OptionsProducts:
           Type: Api
           Properties:
