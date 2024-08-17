@@ -10,11 +10,26 @@ from botocore.exceptions import ClientError
 import bcrypt
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS Preflight Response OK"
+            })
+        }
+
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
+        "headers": cors_headers,
         "body": json.dumps({
             "error": "Internal Error - Admin Not Inserted"
         })
@@ -32,6 +47,7 @@ def lambda_handler(event, context):
                 group in required_cognito_groups for group in user_cognito_groups):
             return {
                 "statusCode": 403,
+                "headers": cors_headers,
                 "body": json.dumps({
                     "message": "Forbidden"
                 }),
@@ -57,6 +73,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
             })
@@ -66,6 +83,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })
@@ -133,6 +151,7 @@ def insert_admin(username, email, password, name, lastname, birthdate, gender, t
                         connection.commit()
                         return {
                             "statusCode": 200,
+                            "headers": cors_headers,
                             "body": json.dumps({
                                 "message": "User inserted successfully, verification email sent"
                             }),
@@ -146,6 +165,7 @@ def insert_admin(username, email, password, name, lastname, birthdate, gender, t
                 else:
                     return {
                         "statusCode": 409,
+                        "headers": cors_headers,
                         "body": json.dumps({
                             "error": "Conflict - User with given username already exists"
                         }),
@@ -154,6 +174,7 @@ def insert_admin(username, email, password, name, lastname, birthdate, gender, t
             else:
                 return {
                     "statusCode": 409,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "error": "Conflict - User with given email already exists"
                     }),

@@ -211,9 +211,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /get_users
-            Method: get
+            Method: GET
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /get_users
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -236,9 +244,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /get_user_by_id/{id}
-            Method: get
+            Method: GET
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /get_user_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -260,9 +276,19 @@ Resources:
         InsertUser:
           Type: Api
           Properties:
-            RestApiId: !Ref LoginApi
+            RestApiId: !Ref UsersApi
             Path: /insert_user
-            Method: post
+            Method: POST
+        Auth:
+          Authorizer: NONE
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /insert_user
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -286,9 +312,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /insert_admin
-            Method: post
+            Method: POST
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /insert_admin
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -311,9 +345,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /update_user_data_patch
-            Method: patch
+            Method: PATCH
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /update_user_data_patch
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -337,7 +379,17 @@ Resources:
           Properties:
             RestApiId: !Ref LoginApi
             Path: /update_user_temp_password_patch
-            Method: patch
+            Method: PATCH
+            Auth:
+              Authorizer: NONE
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /update_user_temp_password_patch
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -361,9 +413,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /update_user_password_patch
-            Method: patch
+            Method: PATCH
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /update_user_password_patch
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -386,9 +446,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /toggle_user_active/{id}
-            Method: patch
+            Method: PATCH
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /toggle_user_active/{id}
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"
@@ -411,9 +479,17 @@ Resources:
           Properties:
             RestApiId: !Ref UsersApi
             Path: /delete_user_by_id/{id}
-            Method: delete
+            Method: DELETE
             Auth:
               Authorizer: CognitoAuthorizer
+        OptionsUsers:
+          Type: Api
+          Properties:
+            Path: /delete_user_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref UsersApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
           REGION_NAME: "us-east-1"

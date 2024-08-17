@@ -8,11 +8,26 @@ from botocore.exceptions import ClientError
 import bcrypt
 from shared.database_manager import DatabaseConfig
 
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+}
 
 def lambda_handler(event, context):
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            "statusCode": 200,
+            "headers": cors_headers,
+            "body": json.dumps({
+                "message": "CORS Preflight Response OK"
+            })
+        }
+
     error_message = 'Error : %s'
     error_500 = {
         "statusCode": 500,
+        "headers": cors_headers,
         "body": json.dumps({
             "error": "Internal Error - User Not Updated"
         })
@@ -33,6 +48,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": "Bad request - Invalid request format"
             })
@@ -42,6 +58,7 @@ def lambda_handler(event, context):
         logging.error(error_message, e)
         return {
             "statusCode": 400,
+            "headers": cors_headers,
             "body": json.dumps({
                 "error": str(e)
             })
@@ -126,6 +143,7 @@ def update_user_temp_password_patch(username, temp_password, new_password):
                             connection.commit()
                             return {
                                 "statusCode": 200,
+                                "headers": cors_headers,
                                 "body": json.dumps({
                                     "message": "User Updated Successfully"
                                 }),
@@ -144,6 +162,7 @@ def update_user_temp_password_patch(username, temp_password, new_password):
             else:
                 return {
                     "statusCode": 404,
+                    "headers": cors_headers,
                     "body": json.dumps({
                         "message": "User Not Found"
                     }),
