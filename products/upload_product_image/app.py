@@ -71,7 +71,7 @@ def lambda_handler(event, context):
 
                 if len(product) > 0:
 
-                    object_key = "products/" + image_name_id + "." + image_type
+                    object_key = "products/" + str(image_name_id) + "." + image_type
 
                     region_name = os.environ.get('REGION_NAME')
                     secret_name = os.environ.get('SECRET_NAME')
