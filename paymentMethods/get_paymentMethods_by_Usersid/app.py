@@ -97,24 +97,39 @@ def get_paymentMethod_by_id(usersid_payment_method):
 
     try:
         with connection.cursor() as cursor:
-            get_query = "SELECT * FROM Payment_Methods WHERE Users_id = %s"
-            cursor.execute(get_query, usersid_payment_method)
-            paymentMethods = cursor.fetchall()
 
-            if len(paymentMethods) > 0:
-                return {
-                    "statusCode": 200,
-                    "headers": cors_headers,
-                    "body": json.dumps({
-                        "paymentMethod": paymentMethods
-                    }),
-                }
+            search_query = ("SELECT * FROM Users WHERE id = %s")
+            cursor.execute(search_query, usersid_payment_method)
+            result = cursor.fetchall()
+
+            if len(result) > 0:
+
+                get_query = "SELECT * FROM Payment_Methods WHERE Users_id = %s"
+                cursor.execute(get_query, usersid_payment_method)
+                paymentMethods = cursor.fetchall()
+
+                if len(paymentMethods) > 0:
+                    return {
+                        "statusCode": 200,
+                        "headers": cors_headers,
+                        "body": json.dumps({
+                            "paymentMethod": paymentMethods
+                        }),
+                    }
+                else:
+                    return {
+                        "statusCode": 404,
+                        "headers": cors_headers,
+                        "body": json.dumps({
+                            "message": "Payment Methods not found"
+                        }),
+                    }
             else:
                 return {
                     "statusCode": 404,
                     "headers": cors_headers,
                     "body": json.dumps({
-                        "message": "Payment Methods not found"
+                        "message": "User not found"
                     }),
                 }
 

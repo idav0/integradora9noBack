@@ -986,19 +986,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetAddresses:
           Type: Api
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /get_addresses
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /get_addresses
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetAddressByIdFunction:
     Type: AWS::Serverless::Function
@@ -1009,19 +1019,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetAddressById:
           Type: Api
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /get_address_by_id/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /get_address_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetAddressesByUsersidFunction:
     Type: AWS::Serverless::Function
@@ -1032,19 +1052,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetAddressesByUsersid:
           Type: Api
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /get_addresses_by_Usersid/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /get_addresses_by_Usersid/{id}
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   InsertAddressFunction:
     Type: AWS::Serverless::Function
@@ -1055,19 +1085,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         InsertAddress:
           Type: Api
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /insert_address
-            Method: post
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /insert_address
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   UpdateAddressPutFunction:
     Type: AWS::Serverless::Function
@@ -1078,19 +1118,62 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         UpdateAddressPut:
           Type: Api
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /update_address_put
-            Method: put
+            Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /update_address_put
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  ToggleAddressActiveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: addresses/toggle_address_active/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        ToggleAddressActive:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AddressesApi
+            Path: /toggle_address_active/{id}
+            Method: PATCH
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /toggle_address_active/{id}
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   DeleteAddressByIdFunction:
     Type: AWS::Serverless::Function
@@ -1109,13 +1192,21 @@ Resources:
           Properties:
             RestApiId: !Ref AddressesApi
             Path: /delete_address_by_id/{id}
-            Method: delete
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsAddresses:
+          Type: Api
+          Properties:
+            Path: /delete_address_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref AddressesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPurchasesFunction:
     Type: AWS::Serverless::Function
@@ -1475,6 +1566,12 @@ Outputs:
   UpdateAddressPutFunction:
     Description: "Update Address Put Lambda Function ARN"
     Value: !GetAtt UpdateAddressPutFunction.Arn
+  ToggleAddressActiveApi:
+    Description: "API Gateway endpoint URL for Prod stage for Toggle  Address Active function"
+    Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_address_active/{id}"
+  ToggleAddressActiveFunction:
+    Description: "Toggle  Address Active Lambda Function ARN"
+    Value: !GetAtt ToggleAddressActiveFunction.Arn
   DeleteAddressByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Address By Id function"
     Value: !Sub "https://${AddressesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_address_by_id/{id}"
