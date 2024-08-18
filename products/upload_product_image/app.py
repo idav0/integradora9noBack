@@ -59,7 +59,7 @@ def lambda_handler(event, context):
             raise ValueError("Bad request - Parameters are missing")
 
         db = DatabaseConfig()
-        connection = db.get_connection()
+        connection = db.get_new_connection()
 
         try:
             image_data = base64.b64decode(image_data)
