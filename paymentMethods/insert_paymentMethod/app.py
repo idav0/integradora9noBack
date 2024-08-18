@@ -107,7 +107,7 @@ def insert_paymentMethod(alias, card_owner, card_number, card_expiration, card_c
             cursor.execute(search_query, Users_id)
             result = cursor.fetchall()
 
-            if result > 0:
+            if len(result) > 0:
 
                 insert_query = ("INSERT INTO Payment_Methods (alias, card_owner, card_number, card_expiration, card_cvv, "
                                 "card_type, card_zip, Users_id)"
