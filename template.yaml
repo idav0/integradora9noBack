@@ -1424,7 +1424,7 @@ Outputs:
     Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_paymentMethod_active/{id}"
   TogglePaymentMethodActiveFunction:
     Description: "Toggle  Payment Method Active Lambda Function ARN"
-    Value: !GetAtt ToggleProductActiveFunction.Arn
+    Value: !GetAtt TogglePaymentMethodActiveFunction.Arn
   DeletePaymentMethodByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Payment Method By Id function"
     Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_paymentMethod_by_id/{id}"
