@@ -126,12 +126,30 @@ Resources:
     Properties:
       Name: PaymentMethodsApi
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
 
   AddressesApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: AddressesApi
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
 
   PurchasesApi:
     Type: AWS::Serverless::Api
@@ -743,13 +761,21 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /get_paymentMethods
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /get_paymentMethods
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPaymentMethodByIdFunction:
     Type: AWS::Serverless::Function
@@ -766,13 +792,21 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /get_paymentMethod_by_id/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /get_paymentMethod_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPaymentMethodsByUsersidFunction:
     Type: AWS::Serverless::Function
@@ -789,13 +823,21 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /get_paymentMethods_by_Usersid/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /get_paymentMethods_by_Usersid/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   InsertPaymentMethodFunction:
     Type: AWS::Serverless::Function
@@ -812,13 +854,21 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /insert_paymentMethod
-            Method: post
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /insert_paymentMethod
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   UpdatePaymentMethodPutFunction:
     Type: AWS::Serverless::Function
@@ -835,13 +885,54 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /update_paymentMethod_put
-            Method: put
+            Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /update_paymentMethod_put
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  TogglePaymentMethodActiveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: paymentMethods/toggle_paymentMethod_active/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        TogglePaymentMethodActive:
+          Type: Api
+          Properties:
+            RestApiId: !Ref PaymentMethodsApi
+            Path: /toggle_paymentMethod_active/{id}
+            Method: PATCH
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /toggle_paymentMethod_active/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   DeletePaymentMethodByIdFunction:
     Type: AWS::Serverless::Function
@@ -858,13 +949,21 @@ Resources:
           Properties:
             RestApiId: !Ref PaymentMethodsApi
             Path: /delete_paymentMethod_by_id/{id}
-            Method: delete
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPaymentMethods:
+          Type: Api
+          Properties:
+            Path: /delete_paymentMethod_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PaymentMethodsApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetAddressesFunction:
     Type: AWS::Serverless::Function
@@ -1320,6 +1419,12 @@ Outputs:
   UpdatePaymentMethodPutFunction:
     Description: "Update Payment Method Put Lambda Function ARN"
     Value: !GetAtt UpdatePaymentMethodPutFunction.Arn
+  TogglePaymentMethodActiveApi:
+    Description: "API Gateway endpoint URL for Prod stage for Toggle  Payment Method Active function"
+    Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_paymentMethod_active/{id}"
+  TogglePaymentMethodActiveFunction:
+    Description: "Toggle  Payment Method Active Lambda Function ARN"
+    Value: !GetAtt ToggleProductActiveFunction.Arn
   DeletePaymentMethodByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Payment Method By Id function"
     Value: !Sub "https://${PaymentMethodsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_paymentMethod_by_id/{id}"

@@ -7,7 +7,7 @@ from shared.database_manager import DatabaseConfig
 cors_headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,PUT',
+    'Access-Control-Allow-Methods': 'OPTIONS,PATCH',
 }
 
 def lambda_handler(event, context):
@@ -25,10 +25,10 @@ def lambda_handler(event, context):
         "statusCode": 500,
         "headers": cors_headers,
         "body": json.dumps({
-            "error": "Internal Error - Product Not Updated"
+            "error": "Internal Error - Payment Method Status Not Toggled"
         })
     }
-    required_cognito_groups = ['admin']
+    required_cognito_groups = ['admin', 'user']
     cognito_groups = 'cognito:groups'
 
     try:
@@ -47,20 +47,15 @@ def lambda_handler(event, context):
                 }),
             }
 
-        json_body = json.loads(event['body'])
-        id_product = json_body['id']
-        name = json_body['name']
-        description = json_body['description']
-        price = json_body['price']
-        stock = json_body['stock']
-        discount = json_body['discount']
-        #image = json_body['image']
-        category_id = json_body['category_id']
+        id_paymentMethod = event['pathParameters'].get('id')
 
-        if id_product is None or name is None or description is None or price is None or stock is None or discount is None or category_id is None:
+        if id_paymentMethod is None:
             raise ValueError("Bad request - Parameters are missing")
 
-        return update_product_put(id_product, name,  description, price, stock, discount, category_id)
+        if not id_paymentMethod.isdigit():
+            raise ValueError("Bad request - Invalid request format")
+
+        return toggle_paymentMethod_active(id_paymentMethod)
 
     except KeyError as e:
         logging.error(error_message, e)
@@ -95,26 +90,31 @@ def lambda_handler(event, context):
         return error_500
 
 
-def update_product_put(id_product, name, description, price, stock, discount, category_id):
+def toggle_paymentMethod_active(id_paymentMethod):
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
     try:
         with connection.cursor() as cursor:
-            search_query = "SELECT * FROM Products WHERE id = %s"
-            cursor.execute(search_query, id_product)
+            search_query = "SELECT * FROM Payment_Methods WHERE id = %s"
+            cursor.execute(search_query, id_paymentMethod)
             result = cursor.fetchall()
 
             if len(result) > 0:
-                update_query = ("UPDATE Products SET name = %s, description = %s, price = %s, stock = %s, discount = %s, category_id = %s "
-                                "WHERE id = %s")
-                cursor.execute(update_query, (name, description, price, stock, discount, category_id, id_product))
+
+                payment_method = result[0]
+
+                payment_method_active_status = payment_method['active']
+                query_active_status = 1 if payment_method_active_status == 0 else 0
+                message = 'activated' if query_active_status == 1 else 'deactivated'
+                toggle_query = "UPDATE Payment_Methods SET active = %s WHERE id = %s"
+                cursor.execute(toggle_query, (query_active_status, id_paymentMethod))
                 connection.commit()
                 return {
                     "statusCode": 200,
                     "headers": cors_headers,
                     "body": json.dumps({
-                        "message": "Product updated successfully"
+                        "message": f"Payment Method {message} successfully"
                     }),
                 }
             else:
@@ -122,7 +122,7 @@ def update_product_put(id_product, name, description, price, stock, discount, ca
                     "statusCode": 404,
                     "headers": cors_headers,
                     "body": json.dumps({
-                        "message": "Product not found"
+                        "message": "Payment Method not found"
                     }),
                 }
     except Exception as e:

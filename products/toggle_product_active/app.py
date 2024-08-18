@@ -7,7 +7,7 @@ from shared.database_manager import DatabaseConfig
 cors_headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,GET',
+    'Access-Control-Allow-Methods': 'OPTIONS,PATCH',
 }
 
 def lambda_handler(event, context):
