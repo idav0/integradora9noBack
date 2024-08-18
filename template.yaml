@@ -755,6 +755,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPaymentMethods:
           Type: Api
@@ -786,6 +788,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPaymentMethodById:
           Type: Api
@@ -817,6 +821,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPaymentMethodsByUsersid:
           Type: Api
@@ -848,6 +854,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         InsertPaymentMethod:
           Type: Api
@@ -879,6 +887,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         UpdatePaymentMethodPut:
           Type: Api
@@ -943,6 +953,8 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         DeletePaymentMethodById:
           Type: Api

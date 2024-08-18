@@ -102,18 +102,33 @@ def insert_paymentMethod(alias, card_owner, card_number, card_expiration, card_c
 
     try:
         with connection.cursor() as cursor:
-            insert_query = ("INSERT INTO Payment_Methods (alias, card_owner, card_number, card_expiration, card_cvv, "
-                            "card_type, card_zip, Users_id)"
-                            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
-            cursor.execute(insert_query, (alias, card_owner, card_number, card_expiration, card_cvv, card_type, card_zip, Users_id))
-            connection.commit()
-            return {
-                "statusCode": 200,
-                "headers": cors_headers,
-                "body": json.dumps({
-                    "message": "Payment Method inserted successfully"
-                }),
-            }
+
+            search_query = ("SELECT * FROM Users WHERE id = %s")
+            cursor.execute(search_query, Users_id)
+            result = cursor.fetchall()
+
+            if result > 0:
+
+                insert_query = ("INSERT INTO Payment_Methods (alias, card_owner, card_number, card_expiration, card_cvv, "
+                                "card_type, card_zip, Users_id)"
+                                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+                cursor.execute(insert_query, (alias, card_owner, card_number, card_expiration, card_cvv, card_type, card_zip, Users_id))
+                connection.commit()
+                return {
+                    "statusCode": 200,
+                    "headers": cors_headers,
+                    "body": json.dumps({
+                        "message": "Payment Method inserted successfully"
+                    }),
+                }
+            else:
+                return {
+                    "statusCode": 404,
+                    "headers": cors_headers,
+                    "body": json.dumps({
+                        "message": "User not found"
+                    }),
+                }
 
     except Exception as e:
         logging.error('Error : %s', e)
