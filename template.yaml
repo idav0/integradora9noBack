@@ -1380,6 +1380,205 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  GetCategoryByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/get_category_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        GetCategoryById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /get_category_by_id/{id}
+            Method: GET
+            Auth:
+              Authorizer: NONE
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /get_category_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  GetCategoryImagesByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/get_category_images_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        GetCategoryImagesById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /get_category_images_by_id/{id}
+            Method: GET
+            Auth:
+              Authorizer: NONE
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /get_category_images_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  InsertCategoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/insert_category/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        InsertCategory:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /insert_category
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /insert_category
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  UpdateCategoryPutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/update_category_put/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        UpdateCategoryPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /update_category_put
+            Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /update_category_put
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  ToggleCategoryActiveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/toggle_category_active/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        ToggleCategoryActive:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /toggle_category_active/{id}
+            Method: PATCH
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /toggle_category_active/{id}
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+  DeleteCategoryByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/delete_category_by_id/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Events:
+        DeleteCategoryById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /delete_category_by_id/{id}
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /delete_category_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+
 
 
 Outputs:
@@ -1623,4 +1822,41 @@ Outputs:
   GetCategoriesFunction:
     Description: "Get Categories Lambda Function ARN"
     Value: !GetAtt GetCategoriesFunction.Arn
+  GetCategoryByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Category By Id function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_category_by_id/{id}"
+  GetCategoryByIdFunction:
+    Description: "Get Category By Id Lambda Function ARN"
+    Value: !GetAtt GetCategoryByIdFunction.Arn
+  GetCategoryImagesByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Get Category Images By Id function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/get_category_images_by_id/{id}"
+  GetCategoryImagesByIdFunction:
+    Description: "Get Category Images By Id Lambda Function ARN"
+    Value: !GetAtt GetCategoryImagesByIdFunction.Arn
+  InsertCategoryApi:
+    Description: "API Gateway endpoint URL for Prod stage for Insert Category function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/insert_category/"
+  InsertCategoryFunction:
+    Description: "Insert Category Lambda Function ARN"
+    Value: !GetAtt InsertCategoryFunction.Arn
+  UpdateCategoryPutApi:
+    Description: "API Gateway endpoint URL for Prod stage for Update Category Put function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_category_put/"
+  UpdateCategoryPutFunction:
+    Description: "Update Category Put Lambda Function ARN"
+    Value: !GetAtt UpdateCategoryPutFunction.Arn
+  ToggleCategoryActiveApi:
+    Description: "API Gateway endpoint URL for Prod stage for Toggle Category Active function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/toggle_category_active/{id}"
+  ToggleCategoryActiveFunction:
+    Description: "Toggle Category Active Lambda Function ARN"
+    Value: !GetAtt ToggleCategoryActiveFunction.Arn
+  DeleteCategoryByIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for Delete Category By Id function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_category_by_id/{id}"
+  DeleteCategoryByIdFunction:
+    Description: "Delete Category By Id Lambda Function ARN"
+    Value: !GetAtt DeleteCategoryByIdFunction.Arn
+
 
