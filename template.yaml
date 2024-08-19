@@ -156,6 +156,15 @@ Resources:
     Properties:
       Name: PurchasesApi
       StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'OPTIONS,POST,GET,PUT,PATCH,DELETE'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:us-east-1:058264551202:userpool/us-east-1_1oU0zkg6n
 
   LoginApi:
     Type: AWS::Serverless::Api
@@ -1217,19 +1226,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPurchases:
           Type: Api
           Properties:
             RestApiId: !Ref PurchasesApi
             Path: /get_purchases
-            Method: get
+            Method: GET
+          Auth:
+                Authorizer: CognitoAuthorizer
+        OptionsPurchases:
+          Type: Api
+          Properties:
+            Path: /get_purchases
+            Method: OPTIONS
+            RestApiId: !Ref PurchasesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPurchaseByIdFunction:
     Type: AWS::Serverless::Function
@@ -1240,19 +1259,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPurchaseById:
           Type: Api
           Properties:
             RestApiId: !Ref PurchasesApi
             Path: /get_purchase_by_id/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPurchases:
+          Type: Api
+          Properties:
+            Path: /get_purchase_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PurchasesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   GetPurchasesByUsersidFunction:
     Type: AWS::Serverless::Function
@@ -1263,19 +1292,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         GetPurchasesByUsersid:
           Type: Api
           Properties:
             RestApiId: !Ref PurchasesApi
             Path: /get_purchases_by_Usersid/{id}
-            Method: get
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPurchases:
+          Type: Api
+          Properties:
+            Path: /get_purchases_by_Usersid/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PurchasesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   InsertPurchaseFunction:
     Type: AWS::Serverless::Function
@@ -1286,42 +1325,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         InsertPurchase:
           Type: Api
           Properties:
             RestApiId: !Ref PurchasesApi
             Path: /insert_purchase
-            Method: post
-      Environment:
-        Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
-
-  UpdatePurchasePutFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: purchases/update_purchase_put/
-      Handler: app.lambda_handler
-      Runtime: python3.9
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Architectures:
-        - x86_64
-      Events:
-        UpdatePurchasePut:
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPurchases:
           Type: Api
           Properties:
+            Path: /insert_purchase
+            Method: OPTIONS
             RestApiId: !Ref PurchasesApi
-            Path: /update_purchase_put
-            Method: put
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
   DeletePurchaseByIdFunction:
     Type: AWS::Serverless::Function
@@ -1332,19 +1358,29 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Architectures:
         - x86_64
+      Layers:
+        - !Ref SharedLayer
       Events:
         DeletePurchaseById:
           Type: Api
           Properties:
             RestApiId: !Ref PurchasesApi
             Path: /delete_purchase_by_id/{id}
-            Method: delete
+            Method: DELETE
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsPurchases:
+          Type: Api
+          Properties:
+            Path: /delete_purchase_by_id/{id}
+            Method: OPTIONS
+            RestApiId: !Ref PurchasesApi
+            Auth:
+              Authorizer: NONE
       Environment:
         Variables:
-          RDS_HOST: "database-mysql-10.cniakw00enzf.us-east-1.rds.amazonaws.com"
-          RDS_USER: "admin"
-          RDS_PASSWORD: "admin123"
-          RDS_DB: "integradorashopeasy"
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
 
 
   GetCategoriesFunction:
@@ -1838,12 +1874,6 @@ Outputs:
   InsertPurchaseFunction:
     Description: "Insert Purchase Lambda Function ARN"
     Value: !GetAtt InsertPurchaseFunction.Arn
-  UpdatePurchasePutApi:
-    Description: "API Gateway endpoint URL for Prod stage for Update Purchase Put function"
-    Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_purchase_put/"
-  UpdatePurchasePutFunction:
-    Description: "Update Purchase Put Lambda Function ARN"
-    Value: !GetAtt UpdatePurchasePutFunction.Arn
   DeletePurchaseByIdApi:
     Description: "API Gateway endpoint URL for Prod stage for Delete Purchase By Id function"
     Value: !Sub "https://${PurchasesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/delete_purchase_by_id/{id}"
