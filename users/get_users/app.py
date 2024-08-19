@@ -12,13 +12,12 @@ cors_headers = {
 }
 
 def lambda_handler(event, context):
-
     if event['httpMethod'] == 'OPTIONS':
         return {
             "statusCode": 200,
             "headers": cors_headers,
             "body": json.dumps({
-                "message": "CORS preflight response OK"
+                "message": "CORS Preflight Response  OK"
             })
         }
 
