@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         "statusCode": 500,
         "headers": cors_headers,
         "body": json.dumps({
-            "error": "Internal Error - Image Not Uploaded"
+            "error": "Internal Error -  Image Not Uploaded"
         })
     }
     required_cognito_groups = ['admin']
