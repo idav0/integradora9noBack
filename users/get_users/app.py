@@ -5,8 +5,6 @@ from botocore.exceptions import ClientError
 from datetime import date, datetime
 from shared.database_manager import DatabaseConfig
 
-logging.basicConfig(level=logging.INFO)
-
 cors_headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
@@ -14,10 +12,7 @@ cors_headers = {
 }
 
 def lambda_handler(event, context):
-    logging.info("Lambda function started")
-
     if event.get('httpMethod') == 'OPTIONS':
-        logging.info("CORS Preflight request")
         return {
             "statusCode": 200,
             "headers": cors_headers,
@@ -38,17 +33,13 @@ def lambda_handler(event, context):
     cognito_groups = 'cognito:groups'
 
     try:
-        logging.info("Extracting user info from requestContext")
-        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
-        logging.info(f"User claims: {user}")
 
+        user = event.get('requestContext', {}).get('authorizer', {}).get('claims', {})
         user_cognito_groups = user.get(cognito_groups, '').split(',') if isinstance(user.get(cognito_groups), str) \
             else user.get(cognito_groups, [])
-        logging.info(f"User groups: {user_cognito_groups}")
 
         if user.get(cognito_groups) is None or not any(
                 group in required_cognito_groups for group in user_cognito_groups):
-            logging.warning("Forbidden access - User is not in required groups")
             return {
                 "statusCode": 403,
                 "headers": cors_headers,
@@ -57,11 +48,10 @@ def lambda_handler(event, context):
                 }),
             }
 
-        logging.info("Calling get_users()")
         return get_users()
 
     except KeyError as e:
-        logging.error("KeyError: %s", e)
+        logging.error(error_message, e)
         return {
             "statusCode": 400,
             "headers": cors_headers,
@@ -71,7 +61,7 @@ def lambda_handler(event, context):
         }
 
     except ValueError as e:
-        logging.error("ValueError: %s", e)
+        logging.error(error_message, e)
         return {
             "statusCode": 400,
             "headers": cors_headers,
@@ -81,44 +71,39 @@ def lambda_handler(event, context):
         }
 
     except ClientError as e:
-        logging.error("ClientError: %s", e)
+        logging.error('Error AWS ClientError : %s', e)
         return error_500
 
     except pymysql.MySQLError as e:
-        logging.error("MySQLError: %s", e)
+        logging.error('Error MySQL : %s', e)
         return error_500
 
     except Exception as e:
-        logging.error("General Exception: %s", e)
+        logging.error(error_message, e)
         return error_500
 
 
 def get_users():
-    logging.info("Entered get_users function")
     db = DatabaseConfig()
     connection = db.get_new_connection()
 
     try:
         with connection.cursor() as cursor:
-            logging.info("Executing SQL query to get users")
-            get_query = "SELECT * FROM Users"
+            get_query = "SELECT * FROM Users LIMIT 1"
             cursor.execute(get_query)
             users = cursor.fetchall()
 
             if len(users) > 0:
-                logging.info("Users found, processing results")
                 for user in users:
                     for key, value in user.items():
                         if isinstance(value, (date, datetime)):
                             user[key] = value.isoformat()
-                logging.info("Returning list of users")
                 return {
                     "statusCode": 200,
                     "headers": cors_headers,
                     "users": users
                 }
             else:
-                logging.warning("No users found")
                 return {
                     "statusCode": 404,
                     "headers": cors_headers,
@@ -127,10 +112,9 @@ def get_users():
                     })
                 }
     except Exception as e:
-        logging.error('Error in get_users: %s', e)
+        logging.error('Error : %s', e)
         connection.rollback()
         raise e
 
     finally:
-        logging.info("Closing database connection")
         connection.close()
