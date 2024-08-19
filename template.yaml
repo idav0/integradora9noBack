@@ -1479,6 +1479,41 @@ Resources:
           REGION_NAME: "us-east-1"
           SECRET_NAME: "bdcred"
 
+  UploadCategoryImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: categories/upload_category_image/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref SharedLayer
+      Timeout: 20
+      Events:
+        UploadCategoryImage:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CategoriesApi
+            Path: /upload_category_image
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+        OptionsCategories:
+          Type: Api
+          Properties:
+            Path: /upload_category_image
+            Method: OPTIONS
+            RestApiId: !Ref CategoriesApi
+            Auth:
+              Authorizer: NONE
+      Environment:
+        Variables:
+          REGION_NAME: "us-east-1"
+          SECRET_NAME: "bdcred"
+
+
   UpdateCategoryPutFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -1840,6 +1875,12 @@ Outputs:
   InsertCategoryFunction:
     Description: "Insert Category Lambda Function ARN"
     Value: !GetAtt InsertCategoryFunction.Arn
+  UploadCategoryImageApi:
+    Description: "API Gateway endpoint URL for Prod stage for Upload Category Image function"
+    Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/upload_category_image/"
+  UploadCategoryImageFunction:
+    Description: "Upload Category Image Lambda Function ARN"
+    Value: !GetAtt UploadCategoryImageFunction.Arn
   UpdateCategoryPutApi:
     Description: "API Gateway endpoint URL for Prod stage for Update Category Put function"
     Value: !Sub "https://${CategoriesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/update_category_put/"
