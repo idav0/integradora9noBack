@@ -48,7 +48,7 @@ def lambda_handler(event, context):
                 }),
             }
 
-        id_user = event['pathParameters'].get('id_user')
+        id_user = event['pathParameters'].get('id')
 
         if id_user is None:
             raise ValueError("Bad request - Parameters are missing")
