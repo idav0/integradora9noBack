@@ -116,7 +116,7 @@ def get_purchase_by_id(id_user):
                         purchases[purchase_id] = {
                             "purchase_id": purchase_id,
                             "totalPrice": row['totalPrice'],
-                            "datetime": row['datetime'],
+                            "datetime": row['datetime'].isoformat(),
                             "users_id": row['Users_id'],
                             "paymentMethod_id": row['Payment_Methods_id'],
                             "address_id": row['Adresses_id'],

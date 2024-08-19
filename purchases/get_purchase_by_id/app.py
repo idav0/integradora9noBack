@@ -112,7 +112,7 @@ def get_purchase_by_id(id_purchase):
                 object_purchase = {
                     "purchase_id": purchase[0]["purchase_id"],
                     "totalPrice": purchase[0]["totalPrice"],
-                    "datetime": purchase[0]["datetime"],
+                    "datetime": purchase[0]["datetime"].isoformat(),
                     "users_id": purchase[0]["Users_id"],
                     "paymentMethod_id": purchase[0]["Payment_Methods_id"],
                     "address_id": purchase[0]["Adresses_id"],
