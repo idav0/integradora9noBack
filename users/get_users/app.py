@@ -12,7 +12,7 @@ cors_headers = {
 }
 
 def lambda_handler(event, context):
-    if event['httpMethod'] == 'OPTIONS':
+    if event.get('httpMethod') == 'OPTIONS':
         return {
             "statusCode": 200,
             "headers": cors_headers,
