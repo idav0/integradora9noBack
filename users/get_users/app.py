@@ -101,7 +101,9 @@ def get_users():
                 return {
                     "statusCode": 200,
                     "headers": cors_headers,
-                    "users": users
+                    "body": json.dumps({
+                        "users": users
+                    }),
                 }
             else:
                 return {
