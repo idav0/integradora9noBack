@@ -89,7 +89,7 @@ def get_users():
 
     try:
         with connection.cursor() as cursor:
-            get_query = "SELECT * FROM Users LIMIT 1"
+            get_query = "SELECT * FROM Users"
             cursor.execute(get_query)
             users = cursor.fetchall()
 
